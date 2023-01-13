@@ -12,12 +12,10 @@
 	<nav>navbar stuff here</nav>
 
 	<div id="board">
-		<List v-for="list in board" :title="list.title">
+		<List v-for="list in board" :title="list.title" :listData="list">
 			<ul class="cards-list">
 				<Card :taskData="task" v-for="task in list.tasks" />
 			</ul>
-
-			<button>+ Add a card</button>
 		</List>
 
 		<div class="new-list">

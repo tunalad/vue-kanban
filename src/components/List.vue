@@ -1,12 +1,34 @@
 <script setup>
 	import { ref, watch } from "vue";
 
-	const props = defineProps(["title"]);
+	const props = defineProps(["title", "listData"]);
+	const list = props.listData;
+	const title = ref(list.title);
 
-	const title = ref(props.title);
 	const editing = ref(false);
 	const inputField = ref(null);
 
+	const addingCard = ref(false);
+	const newCard = ref("");
+
+	function editList() {
+		if (title.value.trim().length === 0) {
+			title.value = list.title;
+			editing.value = false;
+			return;
+		}
+		editing.value = false;
+	}
+
+	function addCard(list) {
+		list.tasks.push({
+			title: newCard.value,
+			description: "",
+			dateCreated: Date.now(),
+		});
+		addingCard.value = false;
+		newCard.value = "";
+	}
 	watch(editing, (newVal, oldVal) => {
 		if (newVal && !oldVal) {
 			requestAnimationFrame(() => {
@@ -25,11 +47,19 @@
 			type="text"
 			v-model="title"
 			v-else
-			@blur="editing = false"
-			@keyup.enter="editing = false"
+			@blur="editList"
+			@keyup.enter="editList"
 			ref="inputField"
 		/>
 		<slot />
+
+		<button v-if="!addingCard" @click="addingCard = true">
+			+ Add a card
+		</button>
+		<div v-else id="new-card">
+			<input type="text" placeholder="enter a title" v-model="newCard" />
+			<button @click="addCard(list)">Add</button>
+		</div>
 	</div>
 </template>
 

@@ -8,6 +8,15 @@
 	const editing = ref(false);
 	const inputField = ref(null);
 
+	function editCard() {
+		if (title.value.trim().length === 0) {
+			title.value = task.title;
+			editing.value = false;
+			return;
+		}
+		editing.value = false;
+	}
+
 	watch(editing, (newVal, oldVal) => {
 		if (newVal && !oldVal) {
 			requestAnimationFrame(() => {
@@ -26,8 +35,8 @@
 			type="text"
 			v-model="title"
 			v-else
-			@blur="editing = false"
-			@keyup.enter="editing = false"
+			@blur="editCard"
+			@keyup.enter="editCard"
 			ref="inputField"
 		/>
 	</li>
