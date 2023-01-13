@@ -21,11 +21,12 @@
 	}
 
 	function addCard(list) {
-		list.tasks.push({
-			title: newCard.value,
-			description: "",
-			dateCreated: Date.now(),
-		});
+		if (newCard.value.trim().length !== 0 || !newCard)
+			list.tasks.push({
+				title: newCard.value,
+				description: "",
+				dateCreated: Date.now(),
+			});
 		addingCard.value = false;
 		newCard.value = "";
 	}

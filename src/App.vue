@@ -1,11 +1,25 @@
 <script setup>
-	import { ref } from "vue";
+	import { ref, vModelRadio } from "vue";
 	import Card from "./components/Card.vue";
 	import List from "./components/List.vue";
 
 	import exampleData from "./exampleData.json";
 
 	const board = ref(exampleData);
+
+	const addingList = ref(false);
+	const newList = ref("");
+
+	function addList() {
+		if (newList.value.trim().length !== 0 || !newList)
+			board.value.push({
+				title: newList.value,
+				dateCreated: Date.now(),
+				tasks: [],
+			});
+		addingList.value = false;
+		newList.value = "";
+	}
 </script>
 
 <template>
@@ -19,7 +33,21 @@
 		</List>
 
 		<div class="new-list">
-			<h3 class="list-title">+ Add a list</h3>
+			<h3
+				v-if="!addingList"
+				class="list-title"
+				@click="addingList = true"
+			>
+				+ Add a list
+			</h3>
+			<div v-else>
+				<input
+					type="text"
+					placeholder="enter a title"
+					v-model="newList"
+				/>
+				<button @click="addList()">Add</button>
+			</div>
 		</div>
 	</div>
 </template>
