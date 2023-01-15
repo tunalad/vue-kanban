@@ -17,6 +17,39 @@
 		editing.value = false;
 	}
 
+	function cardDragStart(item, e) {
+		e.target.style.opacity = 0.1;
+		e.dataTransfer.setData("text", JSON.stringify(item));
+	}
+
+	function cardDragEnd(e) {
+		e.target.style.opacity = 1;
+	}
+
+	function cardDragOver(e) {
+		e.preventDefault();
+		e.currentTarget.style.border = "2px solid pink";
+		//if (!e.target.classList.contains("list-card")) {
+		//	e.target.style.border = "2px solid pink";
+		//}
+	}
+
+	function cardDragLeave(e) {
+		e.preventDefault();
+		e.target.style.border = "";
+		e.currentTarget.style.border = "";
+	}
+
+	function cardDrop(e) {
+		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+		droppedItem.style = { opacity: 1, border: "" };
+		//droppedItem.class = {};
+		e.target.style = { opacity: 1, border: "" };
+		console.log(
+			`Item ${droppedItem.title} was dropped on ${e.target.innerHTML}`
+		);
+	}
+
 	watch(editing, (newVal, oldVal) => {
 		if (newVal && !oldVal) {
 			requestAnimationFrame(() => {
@@ -27,7 +60,15 @@
 </script>
 
 <template>
-	<li class="list-card">
+	<li
+		class="list-card"
+		draggable="true"
+		@dragstart="cardDragStart(task, $event)"
+		@dragend="cardDragEnd($event)"
+		@dragover="cardDragOver($event)"
+		@dragleave="cardDragLeave($event)"
+		@drop="cardDrop($event)"
+	>
 		<p @click="editing = true" v-if="!editing">
 			{{ title }}
 		</p>

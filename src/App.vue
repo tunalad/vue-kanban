@@ -22,39 +22,6 @@
 		addingList.value = false;
 		newList.value = "";
 	}
-
-	function cardDragStart(item, e) {
-		e.target.style.opacity = 0.1;
-		e.dataTransfer.setData("text", JSON.stringify(item));
-	}
-
-	function cardDragEnd(e) {
-		e.target.style.opacity = 1;
-	}
-
-	function cardDragOver(e) {
-		e.preventDefault();
-		e.currentTarget.style.border = "2px solid pink";
-		//if (!e.target.classList.contains("list-card")) {
-		//	e.target.style.border = "2px solid pink";
-		//}
-	}
-
-	function cardDragLeave(e) {
-		e.preventDefault();
-		e.target.style.border = "";
-		e.currentTarget.style.border = "";
-	}
-
-	function cardDrop(e) {
-		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
-		droppedItem.style = { opacity: 1, border: "" };
-		//droppedItem.class = {};
-		e.target.style = { opacity: 1, border: "" };
-		console.log(
-			`Item ${droppedItem.title} was dropped on ${e.target.innerHTML}`
-		);
-	}
 </script>
 
 <template>
@@ -63,16 +30,7 @@
 	<div id="board">
 		<List v-for="list in board" :title="list.title" :listData="list">
 			<ul class="cards-list">
-				<Card
-					:taskData="task"
-					v-for="task in list.tasks"
-					@dragstart="cardDragStart(task, $event)"
-					@dragend="cardDragEnd($event)"
-					@dragover="cardDragOver($event)"
-					@dragleave="cardDragLeave($event)"
-					@drop="cardDrop($event)"
-					draggable="true"
-				/>
+				<Card :taskData="task" v-for="task in list.tasks" />
 			</ul>
 		</List>
 
