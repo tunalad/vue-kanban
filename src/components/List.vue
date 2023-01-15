@@ -25,11 +25,13 @@
 			list.tasks.push({
 				title: newCard.value,
 				description: "",
+				position: list.tasks.length + 1,
 				dateCreated: Date.now(),
 			});
 		addingCard.value = false;
 		newCard.value = "";
 	}
+
 	watch(editing, (newVal, oldVal) => {
 		if (newVal && !oldVal) {
 			requestAnimationFrame(() => {

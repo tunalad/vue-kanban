@@ -1,11 +1,12 @@
 <script setup>
-	import { ref, vModelRadio } from "vue";
+	import { ref } from "vue";
 	import Card from "./components/Card.vue";
 	import List from "./components/List.vue";
 
 	import exampleData from "./exampleData.json";
 
-	const board = ref(exampleData);
+	//const board = ref(exampleData);
+	const board = ref([]);
 
 	const addingList = ref(false);
 	const newList = ref("");
@@ -15,6 +16,7 @@
 			board.value.push({
 				title: newList.value,
 				dateCreated: Date.now(),
+				position: board.value.length + 1,
 				tasks: [],
 			});
 		addingList.value = false;

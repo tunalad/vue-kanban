@@ -2,65 +2,78 @@
 	{
 	   "title":"List 01",
 	   "dateCreated":"Date.now()",
+	   "position": 1,
 	   "tasks":[
 		  {
 			 "title":"Task 01",
 			 "description":"description goes here",
-			 "dateCreated":"Date.now()"
+			 "dateCreated":"Date.now()",
+			 "position": 1
 		  },
 		  {
 			 "title":"Task 02",
-			 "dateCreated":"Date.now()"
+			 "dateCreated":"Date.now()",
+			 "position": 2
 		  },
 		  {
 			 "title":"Task 03",
 			 "description":"description goes here",
-			 "dateCreated":"Date.now()"
+			 "dateCreated":"Date.now()",
+			 "position": 3
 		  }
 	   ]
 	},
 	{
 	   "title":"List 02",
 	   "dateCreated":"Date.now()",
+	   "position": 2,
 	   "tasks":[
 		  {
 			 "title":"Task 04",
 			 "description":"description goes here",
-			 "dateCreated":"Date.now()"
+			 "dateCreated":"Date.now()",
+			 "position": 1
 		  },
 		  {
 			 "title":"Task 05",
 			 "description":"description goes here",
-			 "dateCreated":"Date.now()"
+			 "dateCreated":"Date.now()",
+			 "position": 2
 		  },
 		  {
 			 "title":"Task 06",
-			 "dateCreated":"Date.now()"
+			 "dateCreated":"Date.now()",
+			 "position": 3
 		  }
 	   ]
 	},
 	{
 	   "title":"List 03",
 	   "dateCreated":"Date.now()",
+	   "position": 3,
 	   "tasks":[
 		  {
 			 "title":"Task 07",
-			 "dateCreated":"Date.now()"
+			 "dateCreated":"Date.now()",
+			 "position": 1
 		  }
 	   ]
 	},
 	{
 	   "title":"List 04",
 	   "dateCreated":"Date.now()",
+	   "position": 4,
 	   "tasks":[
 		  {
 			 "title":"Task 08",
-			 "dateCreated":"Date.now()"
+			 "dateCreated":"Date.now()",
+			 "position": 1
 		  },
 		  {
 			 "title":"Task 09",
 			 "description":"description goes here",
-			 "dateCreated":"Date.now()"
+			 "dateCreated":"Date.now()",
+			 "position": 2
 		  }
 	   ]
 	}
