@@ -53,6 +53,7 @@
 	function listDragStart(item, e) {
 		if (e.target.classList.contains("list")) {
 			e.dataTransfer.setData("text", JSON.stringify(item));
+			e.dataTransfer.setData("isList", true);
 			listStyle(e, "opacity10");
 		}
 	}

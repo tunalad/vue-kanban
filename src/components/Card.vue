@@ -18,20 +18,21 @@
 	}
 
 	function cardStyle(e, style) {
-		switch (style) {
-			case "border":
-				e.currentTarget.style.border = "2px solid pink";
-				break;
-			case "noBorder":
-				e.currentTarget.style.border = "";
-				break;
-			case "opacity10":
-				e.target.style.opacity = 0.1;
-				break;
-			case "opacity100":
-				e.target.style.opacity = 1;
-				break;
-		}
+		if (e.dataTransfer.getData("isList") === "false")
+			switch (style) {
+				case "border":
+					e.currentTarget.style.border = "2px solid pink";
+					break;
+				case "noBorder":
+					e.currentTarget.style.border = "";
+					break;
+				case "opacity10":
+					e.target.style.opacity = 0.1;
+					break;
+				case "opacity100":
+					e.target.style.opacity = 1;
+					break;
+			}
 	}
 
 	/* ============================== */
@@ -39,13 +40,16 @@
 	/* ============================== */
 	function cardDragStart(item, e) {
 		e.dataTransfer.setData("text", JSON.stringify(item));
+		e.dataTransfer.setData("isList", false);
 		cardStyle(e, "opacity10");
 	}
 
 	function cardDrop(item, e) {
 		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
-
-		console.log(`Item ${droppedItem.title} was dropped on ${item.title}`);
+		if (e.dataTransfer.getData("isList") === "false")
+			console.log(
+				`Item ${droppedItem.title} was dropped on ${item.title}`
+			);
 
 		cardStyle(e, "noBorder");
 	}
