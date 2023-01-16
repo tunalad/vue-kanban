@@ -32,6 +32,7 @@
 		newCard.value = "";
 	}
 
+	// handles focusing when editing lists
 	watch(editing, (newVal, oldVal) => {
 		if (newVal && !oldVal) {
 			requestAnimationFrame(() => {
