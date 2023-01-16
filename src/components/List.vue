@@ -32,6 +32,43 @@
 		newCard.value = "";
 	}
 
+	function listStyle(e, style) {
+		if (e.target.classList.contains("list"))
+			switch (style) {
+				case "border":
+					e.currentTarget.style.border = "2px solid pink";
+					break;
+				case "noBorder":
+					e.currentTarget.style.border = "";
+					break;
+				case "opacity10":
+					e.target.style.opacity = 0.1;
+					break;
+				case "opacity100":
+					e.target.style.opacity = 1;
+					break;
+			}
+	}
+
+	function listDragStart(item, e) {
+		if (e.target.classList.contains("list")) {
+			e.dataTransfer.setData("text", JSON.stringify(item));
+			listStyle(e, "opacity10");
+		}
+	}
+
+	function listDrop(item, e) {
+		if (e.target.classList.contains("list")) {
+			let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+
+			console.log(
+				`Item ${droppedItem.title} was dropped on ${item.title}`
+			);
+
+			listStyle(e, "noBorder");
+		}
+	}
+
 	// handles focusing when editing lists
 	watch(editing, (newVal, oldVal) => {
 		if (newVal && !oldVal) {
@@ -43,7 +80,15 @@
 </script>
 
 <template>
-	<div class="list">
+	<div
+		class="list"
+		draggable="true"
+		@dragstart="listDragStart(list, $event)"
+		@drop="listDrop(list, $event)"
+		@dragend="listStyle($event, 'opacity100')"
+		@dragover.prevent="listStyle($event, 'border')"
+		@dragleave="listStyle($event, 'noBorder')"
+	>
 		<h3 class="list-title" @click="editing = true" v-if="!editing">
 			{{ title }}
 		</h3>
@@ -78,6 +123,7 @@
 		display: inline-block;
 		vertical-align: top;
 		overflow: auto;
+		user-select: none;
 	}
 	.list ul {
 		margin: 0;
