@@ -23,7 +23,6 @@
 				e.currentTarget.style.border = "2px solid pink";
 				break;
 			case "noBorder":
-				//e.target.style.border = "";
 				e.currentTarget.style.border = "";
 				break;
 			case "opacity10":
@@ -44,11 +43,7 @@
 	}
 
 	function cardDrop(item, e) {
-		e.preventDefault();
 		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
-
-		let parent = e.target.closest(".cards-list");
-		if (!parent) return;
 
 		console.log(`Item ${droppedItem.title} was dropped on ${item.title}`);
 
@@ -70,10 +65,10 @@
 		class="list-card"
 		draggable="true"
 		@dragstart="cardDragStart(task, $event)"
+		@drop.prevent="cardDrop(task, $event)"
 		@dragend="cardStyle($event, 'opacity100')"
 		@dragover.prevent="cardStyle($event, 'border')"
 		@dragleave="cardStyle($event, 'noBorder')"
-		@drop="cardDrop(task, $event)"
 	>
 		<p @click="editing = true" v-if="!editing">
 			{{ title }}
