@@ -1,12 +1,10 @@
 <script setup>
-	import { ref, reactive } from "vue";
+	import { ref, inject, watch } from "vue";
 	import Card from "./components/Card.vue";
 	import List from "./components/List.vue";
 
-	import exampleData from "./exampleData.json";
-
-	const board = ref(exampleData);
-	//const board = ref([]);
+	const store = inject("store");
+	const board = ref(store.state.board);
 
 	const addingList = ref(false);
 	const newList = ref("");
@@ -22,15 +20,28 @@
 		addingList.value = false;
 		newList.value = "";
 	}
+
+	watch(board, () => {
+		board.sort((a, b) => a.position - b.position);
+	});
 </script>
 
 <template>
 	<nav>navbar stuff here</nav>
 
 	<div id="board">
-		<List v-for="list in board" :title="list.title" :listData="list">
+		<List
+			v-for="list in board"
+			:key="list.id"
+			:title="list.title"
+			:listData="list"
+		>
 			<ul class="cards-list">
-				<Card :taskData="task" v-for="task in list.tasks" />
+				<Card
+					:taskData="task"
+					v-for="task in list.tasks"
+					:key="task.id"
+				/>
 			</ul>
 		</List>
 

@@ -2,7 +2,7 @@
 	{
 	   "title":"List 01",
 	   "dateCreated":"Date.now()",
-	   "position": 1,
+	   "position": 2,
 	   "tasks":[
 		  {
 			 "title":"Task 01",
@@ -26,7 +26,7 @@
 	{
 	   "title":"List 02",
 	   "dateCreated":"Date.now()",
-	   "position": 2,
+	   "position": 1,
 	   "tasks":[
 		  {
 			 "title":"Task 04",
