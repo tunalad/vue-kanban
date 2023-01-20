@@ -30,18 +30,9 @@
 	<nav>navbar stuff here</nav>
 
 	<div id="board">
-		<List
-			v-for="list in board"
-			:key="list.id"
-			:title="list.title"
-			:listData="list"
-		>
+		<List v-for="list in board" :listData="list">
 			<ul class="cards-list">
-				<Card
-					:taskData="task"
-					v-for="task in list.tasks"
-					:key="task.id"
-				/>
+				<Card v-for="task in list.tasks" :taskData="task" />
 			</ul>
 		</List>
 

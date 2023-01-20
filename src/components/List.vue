@@ -1,9 +1,7 @@
 <script setup>
 	import { ref, watch } from "vue";
 
-	const props = defineProps(["title", "listData"]);
-	const list = props.listData;
-	const title = ref(list.title);
+	const props = defineProps(["listData"]);
 
 	const editing = ref(false);
 	const inputField = ref(null);
@@ -12,11 +10,11 @@
 	const newCard = ref("");
 
 	function editList() {
-		if (title.value.trim().length === 0) {
-			title.value = list.title;
-			editing.value = false;
-			return;
-		}
+		//if (props.listData.title.trim().length === 0) {
+		//	title.value = list.title;
+		//	editing.value = false;
+		//	return;
+		//}
 		editing.value = false;
 	}
 
@@ -50,6 +48,9 @@
 			}
 	}
 
+	/* ============================== */
+	/* DRAGGING FUNCTIONALITIES BELOW */
+	/* ============================== */
 	function listDragStart(item, e) {
 		if (e.target.classList.contains("list")) {
 			e.dataTransfer.setData("text", JSON.stringify(item));
@@ -63,7 +64,7 @@
 			let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
 
 			console.log(
-				`Item ${droppedItem.title} was dropped on ${item.title}`
+				`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
 			);
 
 			listStyle(e, "noBorder");
@@ -84,18 +85,18 @@
 	<div
 		class="list"
 		draggable="true"
-		@dragstart="listDragStart(list, $event)"
-		@drop="listDrop(list, $event)"
+		@dragstart="listDragStart(props.listData, $event)"
+		@drop="listDrop(props.listData, $event)"
 		@dragend="listStyle($event, 'opacity100')"
 		@dragover.prevent="listStyle($event, 'border')"
 		@dragleave="listStyle($event, 'noBorder')"
 	>
 		<h3 class="list-title" @click="editing = true" v-if="!editing">
-			{{ title }}
+			{{ props.listData.title }}
 		</h3>
 		<input
 			type="text"
-			v-model="title"
+			v-model="props.listData.title"
 			v-else
 			@blur="editList"
 			@keyup.enter="editList"

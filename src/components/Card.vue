@@ -2,18 +2,16 @@
 	import { ref, watch } from "vue";
 
 	const props = defineProps(["taskData"]);
-	const task = props.taskData;
 
-	const title = ref(task.title);
 	const editing = ref(false);
 	const inputField = ref(null);
 
 	function editCard() {
-		if (title.value.trim().length === 0) {
-			title.value = task.title;
-			editing.value = false;
-			return;
-		}
+		//if (title.value.trim().length === 0) {
+		//	title.value = task.title;
+		//	editing.value = false;
+		//	return;
+		//}
 		editing.value = false;
 	}
 
@@ -48,7 +46,7 @@
 		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
 		if (e.dataTransfer.getData("isList") === "false")
 			console.log(
-				`Item ${droppedItem.title} was dropped on ${item.title}`
+				`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
 			);
 
 		cardStyle(e, "noBorder");
@@ -68,19 +66,19 @@
 	<li
 		class="list-card"
 		draggable="true"
-		@dragstart="cardDragStart(task, $event)"
-		@drop.prevent="cardDrop(task, $event)"
+		@dragstart="cardDragStart(props.taskData, $event)"
+		@drop.prevent="cardDrop(props.taskData, $event)"
 		@dragend="cardStyle($event, 'opacity100')"
 		@dragover.prevent="cardStyle($event, 'border')"
 		@dragleave="cardStyle($event, 'noBorder')"
 	>
 		<p @click="editing = true" v-if="!editing">
-			{{ title }}
+			{{ props.taskData.title }}
 		</p>
 		<input
-			type="text"
-			v-model="title"
 			v-else
+			type="text"
+			v-model="props.taskData.title"
 			@blur="editCard"
 			@keyup.enter="editCard"
 			ref="inputField"
