@@ -62,7 +62,7 @@
 	{
 	   "title":"List 04",
 	   "dateCreated":"Date.now()",
-	   "position": 4,
+	   "position": 0,
 	   "tasks":[
 		  {
 			 "title":"Task 08",

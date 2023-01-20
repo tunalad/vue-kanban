@@ -1,7 +1,8 @@
 <script setup>
 	import { ref, watch } from "vue";
+	import * as utils from "../utils";
 
-	const props = defineProps(["listData"]);
+	const props = defineProps(["listData", "boardData"]);
 
 	const editing = ref(false);
 	const inputField = ref(null);
@@ -23,7 +24,7 @@
 			list.tasks.push({
 				title: newCard.value,
 				description: "",
-				position: list.tasks.length + 1,
+				position: list.tasks.length,
 				dateCreated: Date.now(),
 			});
 		addingCard.value = false;
@@ -67,6 +68,11 @@
 				`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
 			);
 
+			utils.moveInArray(
+				props.boardData,
+				droppedItem.position,
+				item.position
+			);
 			listStyle(e, "noBorder");
 		}
 	}
@@ -109,7 +115,7 @@
 		</button>
 		<div v-else id="new-card">
 			<input type="text" placeholder="enter a title" v-model="newCard" />
-			<button @click="addCard(list)">Add</button>
+			<button @click="addCard(props.listData)">Add</button>
 		</div>
 	</div>
 </template>

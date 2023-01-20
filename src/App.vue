@@ -5,6 +5,7 @@
 
 	const store = inject("store");
 	const board = ref(store.state.board);
+	board.value.sort((a, b) => a.position - b.position);
 
 	const addingList = ref(false);
 	const newList = ref("");
@@ -14,7 +15,7 @@
 			board.value.push({
 				title: newList.value,
 				dateCreated: Date.now(),
-				position: board.value.length + 1,
+				position: board.value.length,
 				tasks: [],
 			});
 		addingList.value = false;
@@ -22,7 +23,8 @@
 	}
 
 	watch(board, () => {
-		board.sort((a, b) => a.position - b.position);
+		console.log(board.value);
+		board.value.sort((a, b) => a.position - b.position);
 	});
 </script>
 
@@ -30,7 +32,7 @@
 	<nav>navbar stuff here</nav>
 
 	<div id="board">
-		<List v-for="list in board" :listData="list">
+		<List v-for="list in board" :listData="list" :boardData="board">
 			<ul class="cards-list">
 				<Card v-for="task in list.tasks" :taskData="task" />
 			</ul>
