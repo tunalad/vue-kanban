@@ -34,7 +34,11 @@
 	<div id="board">
 		<List v-for="list in board" :listData="list" :boardData="board">
 			<ul class="cards-list">
-				<Card v-for="task in list.tasks" :taskData="task" />
+				<Card
+					v-for="task in list.tasks"
+					:taskData="task"
+					:listData="list"
+				/>
 			</ul>
 		</List>
 

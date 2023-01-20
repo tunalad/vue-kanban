@@ -1,7 +1,8 @@
 <script setup>
 	import { ref, watch } from "vue";
+	import * as utils from "../utils";
 
-	const props = defineProps(["taskData"]);
+	const props = defineProps(["taskData", "listData"]);
 
 	const editing = ref(false);
 	const inputField = ref(null);
@@ -49,6 +50,11 @@
 				`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
 			);
 
+		utils.moveInArray(
+			props.listData.tasks,
+			droppedItem.position,
+			item.position
+		);
 		cardStyle(e, "noBorder");
 	}
 

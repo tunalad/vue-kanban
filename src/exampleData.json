@@ -19,7 +19,7 @@
 			 "title":"Task 03",
 			 "description":"description goes here",
 			 "dateCreated":"Date.now()",
-			 "position": 3
+			 "position": 0
 		  }
 	   ]
 	},
