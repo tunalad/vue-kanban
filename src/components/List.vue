@@ -69,10 +69,10 @@
 		if (!e.target.classList.contains("list")) return;
 
 		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
-		let fromList = JSON.parse(e.dataTransfer.getData("fromList"));
 
 		// if card dropped
 		if (e.dataTransfer.getData("isList") === "false") {
+			let fromList = JSON.parse(e.dataTransfer.getData("fromList"));
 			console.log(
 				`pop '${droppedItem.title}' from '${
 					JSON.parse(e.dataTransfer.getData("fromList")).title
