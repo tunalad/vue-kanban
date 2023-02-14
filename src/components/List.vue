@@ -57,25 +57,32 @@
 		if (e.target.classList.contains("list")) {
 			e.dataTransfer.setData("text", JSON.stringify(item));
 			e.dataTransfer.setData("isList", true);
-			listStyle(e, "opacity10");
 		}
 	}
 
 	function listDrop(item, e) {
-		if (e.target.classList.contains("list")) {
-			let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+		/* this line prevents this function from executing
+		when dropping a card onto a card */
+		if (!e.target.classList.contains("list")) return;
 
+		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+
+		// if card dropped
+		if (e.dataTransfer.getData("isList") === "false") {
 			console.log(
-				`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
+				`pop '${droppedItem.title}' from '${e.dataTransfer.getData(
+					"fromList"
+				)}', push to '${item.title}' on position 0`
 			);
-
-			utils.moveInArray(
-				props.boardData,
-				droppedItem.position,
-				item.position
-			);
-			listStyle(e, "noBorder");
+			return;
 		}
+
+		// if list dropped
+		console.log(
+			`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
+		);
+
+		utils.moveInArray(props.boardData, droppedItem.position, item.position);
 	}
 
 	// handles focusing when editing lists
@@ -92,8 +99,14 @@
 	<div
 		class="list"
 		draggable="true"
-		@dragstart="listDragStart(props.listData, $event)"
-		@drop="listDrop(props.listData, $event)"
+		@dragstart="
+			listDragStart(props.listData, $event);
+			listStyle($event, 'opacity10');
+		"
+		@drop="
+			listDrop(props.listData, $event);
+			listStyle($event, 'noBorder');
+		"
 		@dragend="listStyle($event, 'opacity100')"
 		@dragover.prevent="listStyle($event, 'border')"
 		@dragleave="listStyle($event, 'noBorder')"

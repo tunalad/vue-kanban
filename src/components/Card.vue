@@ -39,23 +39,38 @@
 	/* ============================== */
 	function cardDragStart(item, e) {
 		e.dataTransfer.setData("text", JSON.stringify(item));
+		e.dataTransfer.setData("fromList", props.listData.title);
 		e.dataTransfer.setData("isList", false);
-		cardStyle(e, "opacity10");
 	}
 
 	function cardDrop(item, e) {
 		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
-		if (e.dataTransfer.getData("isList") === "false")
+
+		// if list dropped, do nothing
+		if (e.dataTransfer.getData("isList") === "true") return;
+
+		// if not from the same list
+		if (e.dataTransfer.getData("fromList") !== props.listData.title) {
 			console.log(
-				`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
+				`pop '${droppedItem.title}' from '${e.dataTransfer.getData(
+					"fromList"
+				)}', and push to '${props.listData.title}' on position ${
+					item.position + 1
+				}`
 			);
+			return;
+		}
+
+		// if from the same list
+		console.log(
+			`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
+		);
 
 		utils.moveInArray(
 			props.listData.tasks,
 			droppedItem.position,
 			item.position
 		);
-		cardStyle(e, "noBorder");
 	}
 
 	// handles focusing when editing cards
@@ -72,8 +87,14 @@
 	<li
 		class="list-card"
 		draggable="true"
-		@dragstart="cardDragStart(props.taskData, $event)"
-		@drop.prevent="cardDrop(props.taskData, $event)"
+		@dragstart="
+			cardDragStart(props.taskData, $event);
+			cardStyle($event, 'opacity10');
+		"
+		@drop.prevent="
+			cardDrop(props.taskData, $event);
+			cardStyle($event, 'noBorder');
+		"
 		@dragend="cardStyle($event, 'opacity100')"
 		@dragover.prevent="cardStyle($event, 'border')"
 		@dragleave="cardStyle($event, 'noBorder')"
