@@ -73,11 +73,6 @@
 		// if card dropped
 		if (e.dataTransfer.getData("isList") === "false") {
 			let fromList = JSON.parse(e.dataTransfer.getData("fromList"));
-			console.log(
-				`pop '${droppedItem.title}' from '${
-					JSON.parse(e.dataTransfer.getData("fromList")).title
-				}', push to '${item.title}' on position 0`
-			);
 
 			// pops item from old list
 			utils.removeObject(
@@ -95,10 +90,6 @@
 		}
 
 		// if list dropped
-		console.log(
-			`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
-		);
-
 		utils.moveInArray(props.boardData, droppedItem.position, item.position);
 	}
 

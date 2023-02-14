@@ -55,14 +55,6 @@
 
 		// if not from the same list
 		if (fromList.title !== props.listData.title) {
-			console.log(
-				`pop '${droppedItem.title}' from '${
-					JSON.parse(e.dataTransfer.getData("fromList")).title
-				}', and push to '${props.listData.title}' on position ${
-					item.position + 1
-				}`
-			);
-
 			// pops item from old list
 			utils.removeObject(
 				board.value[fromList.position].tasks,
@@ -79,10 +71,6 @@
 		}
 
 		// if from the same list
-		console.log(
-			`Item ${droppedItem.title} (${droppedItem.position}) was dropped on ${item.title} (${item.position})`
-		);
-
 		utils.moveInArray(
 			props.listData.tasks,
 			droppedItem.position,

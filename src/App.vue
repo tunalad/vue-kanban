@@ -5,6 +5,7 @@
 
 	const store = inject("store");
 	const board = ref(store.state.board);
+
 	board.value.sort((a, b) => a.position - b.position);
 
 	const addingList = ref(false);
@@ -21,11 +22,6 @@
 		addingList.value = false;
 		newList.value = "";
 	}
-
-	watch(board, () => {
-		console.log(board.value);
-		board.value.sort((a, b) => a.position - b.position);
-	});
 </script>
 
 <template>
