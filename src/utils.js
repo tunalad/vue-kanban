@@ -17,4 +17,26 @@ function moveInArray(array, fromPos, toPos) {
 	array.sort((a, b) => a.position - b.position);
 }
 
-export { moveInArray };
+function removeObject(array, position) {
+	if (position < 0 || position >= array.length) {
+		console.log("Invalid position.");
+		return;
+	}
+	array.splice(position, 1);
+	for (let i = 0; i < array.length; i++) {
+		array[i].position = i;
+	}
+}
+
+function addObject(array, object, position) {
+	if (position < 0 || position > array.length) {
+		console.log("Invalid position.");
+		return;
+	}
+	array.splice(position, 0, object);
+	for (let i = 0; i < array.length; i++) {
+		array[i].position = i;
+	}
+}
+
+export { moveInArray, removeObject, addObject };

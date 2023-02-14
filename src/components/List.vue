@@ -1,6 +1,9 @@
 <script setup>
-	import { ref, watch } from "vue";
+	import { ref, inject, watch } from "vue";
 	import * as utils from "../utils";
+
+	const store = inject("store");
+	const board = ref(store.state.board);
 
 	const props = defineProps(["listData", "boardData"]);
 	props.listData.tasks.sort((a, b) => a.position - b.position);
@@ -66,6 +69,7 @@
 		if (!e.target.classList.contains("list")) return;
 
 		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+		let fromList = JSON.parse(e.dataTransfer.getData("fromList"));
 
 		// if card dropped
 		if (e.dataTransfer.getData("isList") === "false") {
@@ -73,6 +77,19 @@
 				`pop '${droppedItem.title}' from '${
 					JSON.parse(e.dataTransfer.getData("fromList")).title
 				}', push to '${item.title}' on position 0`
+			);
+
+			// pops item from old list
+			utils.removeObject(
+				board.value[fromList.position].tasks,
+				droppedItem.position
+			);
+
+			// pushes to the new list
+			utils.addObject(
+				board.value[props.listData.position].tasks,
+				droppedItem,
+				0
 			);
 			return;
 		}
