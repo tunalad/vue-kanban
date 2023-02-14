@@ -70,9 +70,9 @@
 		// if card dropped
 		if (e.dataTransfer.getData("isList") === "false") {
 			console.log(
-				`pop '${droppedItem.title}' from '${e.dataTransfer.getData(
-					"fromList"
-				)}', push to '${item.title}' on position 0`
+				`pop '${droppedItem.title}' from '${
+					JSON.parse(e.dataTransfer.getData("fromList")).title
+				}', push to '${item.title}' on position 0`
 			);
 			return;
 		}

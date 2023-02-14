@@ -39,7 +39,7 @@
 	/* ============================== */
 	function cardDragStart(item, e) {
 		e.dataTransfer.setData("text", JSON.stringify(item));
-		e.dataTransfer.setData("fromList", props.listData.title);
+		e.dataTransfer.setData("fromList", JSON.stringify(props.listData));
 		e.dataTransfer.setData("isList", false);
 	}
 
@@ -52,9 +52,9 @@
 		// if not from the same list
 		if (e.dataTransfer.getData("fromList") !== props.listData.title) {
 			console.log(
-				`pop '${droppedItem.title}' from '${e.dataTransfer.getData(
-					"fromList"
-				)}', and push to '${props.listData.title}' on position ${
+				`pop '${droppedItem.title}' from '${
+					JSON.parse(e.dataTransfer.getData("fromList")).title
+				}', and push to '${props.listData.title}' on position ${
 					item.position + 1
 				}`
 			);
