@@ -113,6 +113,7 @@
 			v-model="props.taskData.title"
 			@blur="editCard"
 			@keyup.enter="editCard"
+			@keyup.esc="editing = false"
 			ref="inputField"
 		/>
 	</li>

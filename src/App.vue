@@ -10,6 +10,7 @@
 
 	const addingList = ref(false);
 	const newList = ref("");
+	const inputField = ref(null);
 
 	function addList() {
 		if (newList.value.trim().length !== 0 || !newList)
@@ -22,6 +23,15 @@
 		addingList.value = false;
 		newList.value = "";
 	}
+
+	// handles focusing when adding lists
+	watch(addingList, (newVal, oldVal) => {
+		if (newVal && !oldVal) {
+			requestAnimationFrame(() => {
+				inputField.value.focus();
+			});
+		}
+	});
 </script>
 
 <template>
@@ -51,6 +61,13 @@
 					type="text"
 					placeholder="enter a title"
 					v-model="newList"
+					ref="inputField"
+					@blur="addList"
+					@keyup.enter="addList"
+					@keyup.esc="
+						addingList = false;
+						newList = '';
+					"
 				/>
 				<button @click="addList()">Add</button>
 			</div>

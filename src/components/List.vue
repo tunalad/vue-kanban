@@ -101,6 +101,15 @@
 			});
 		}
 	});
+
+	// handles focusing when adding cards
+	watch(addingCard, (newVal, oldVal) => {
+		if (newVal && !oldVal) {
+			requestAnimationFrame(() => {
+				inputField.value.focus();
+			});
+		}
+	});
 </script>
 
 <template>
@@ -128,6 +137,7 @@
 			v-else
 			@blur="editList"
 			@keyup.enter="editList"
+			@keyup.esc="editing = false"
 			ref="inputField"
 		/>
 		<slot />
@@ -136,7 +146,18 @@
 			+ Add a card
 		</button>
 		<div v-else id="new-card">
-			<input type="text" placeholder="enter a title" v-model="newCard" />
+			<input
+				type="text"
+				placeholder="enter a title"
+				v-model="newCard"
+				@blur="addCard(props.listData)"
+				@keyup.enter="addCard(props.listData)"
+				@keyup.esc="
+					addingCard = false;
+					newCard = '';
+				"
+				ref="inputField"
+			/>
 			<button @click="addCard(props.listData)">Add</button>
 		</div>
 	</div>
