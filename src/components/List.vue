@@ -191,5 +191,6 @@
 		background-color: darkblue;
 		display: table;
 		white-space: normal;
+		word-break: break-all;
 	}
 </style>

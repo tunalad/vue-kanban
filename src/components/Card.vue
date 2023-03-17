@@ -125,6 +125,7 @@
 		margin: 0;
 		padding: 0;
 		white-space: normal;
+		word-break: break-all;
 	}
 	.list-card {
 		background-color: crimson;
