@@ -124,6 +124,7 @@
 	p {
 		margin: 0;
 		padding: 0;
+		white-space: normal;
 	}
 	.list-card {
 		background-color: crimson;

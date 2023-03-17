@@ -102,6 +102,10 @@
 		padding: 0 0.5rem;
 		margin: 0.5rem;
 
+		cursor: default;
 		display: inline-block;
+	}
+	.new-list h3 {
+		margin: 0.75rem;
 	}
 </style>

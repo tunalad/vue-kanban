@@ -190,5 +190,6 @@
 		margin: 0.2rem 0.5rem;
 		background-color: darkblue;
 		display: table;
+		white-space: normal;
 	}
 </style>
