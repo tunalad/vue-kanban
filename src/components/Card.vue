@@ -9,13 +9,13 @@
 
 	const editing = ref(false);
 	const inputField = ref(null);
+	const inputValue = ref(props.taskData.title);
 
-	function editCard() {
-		//if (title.value.trim().length === 0) {
-		//	title.value = task.title;
-		//	editing.value = false;
-		//	return;
-		//}
+	function editCard(e) {
+		if (inputValue.value.trim().length > 0 && e.key !== "Escape")
+			props.taskData.title = inputValue.value;
+
+		inputValue.value = props.taskData.title;
 		editing.value = false;
 	}
 
@@ -107,14 +107,15 @@
 		<p @click="editing = true" v-if="!editing">
 			{{ props.taskData.title }}
 		</p>
+
 		<input
-			v-else
 			type="text"
-			v-model="props.taskData.title"
+			ref="inputField"
+			v-model="inputValue"
+			v-else
 			@blur="editCard"
 			@keyup.enter="editCard"
-			@keyup.esc="editing = false"
-			ref="inputField"
+			@keyup.esc="editCard"
 		/>
 	</li>
 </template>

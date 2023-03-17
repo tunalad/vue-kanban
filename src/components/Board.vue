@@ -12,7 +12,13 @@
 	const newList = ref("");
 	const inputField = ref(null);
 
-	function addList() {
+	function addList(e) {
+		if (e.key === "Escape") {
+			addingList.value = false;
+			newList.value = "";
+			return;
+		}
+
 		if (newList.value.trim().length !== 0 || !newList)
 			board.value.push({
 				title: newList.value,
@@ -62,12 +68,9 @@
 					ref="inputField"
 					@blur="addList"
 					@keyup.enter="addList"
-					@keyup.esc="
-						addingList = false;
-						newList = '';
-					"
+					@keyup.esc="addList"
 				/>
-				<button @click="addList()">Add</button>
+				<button @click="addList">Add</button>
 			</div>
 		</div>
 	</div>

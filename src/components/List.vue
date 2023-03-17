@@ -10,20 +10,26 @@
 
 	const editing = ref(false);
 	const inputField = ref(null);
+	const inputValue = ref(props.listData.title);
 
 	const addingCard = ref(false);
 	const newCard = ref("");
 
-	function editList() {
-		//if (props.listData.title.trim().length === 0) {
-		//	title.value = list.title;
-		//	editing.value = false;
-		//	return;
-		//}
+	function editList(e) {
+		if (inputValue.value.trim().length > 0 && e.key !== "Escape")
+			props.listData.title = inputValue.value;
+
+		inputValue.value = props.listData.title;
 		editing.value = false;
 	}
 
-	function addCard(list) {
+	function addCard(e, list) {
+		if (e.key === "Escape") {
+			addingCard.value = false;
+			newCard.value = "";
+			return;
+		}
+
 		if (newCard.value.trim().length !== 0 || !newCard)
 			list.tasks.push({
 				title: newCard.value,
@@ -131,15 +137,17 @@
 		<h3 class="list-title" @click="editing = true" v-if="!editing">
 			{{ props.listData.title }}
 		</h3>
+
 		<input
 			type="text"
-			v-model="props.listData.title"
+			ref="inputField"
+			v-model="inputValue"
 			v-else
 			@blur="editList"
 			@keyup.enter="editList"
-			@keyup.esc="editing = false"
-			ref="inputField"
+			@keyup.esc="editList"
 		/>
+
 		<slot />
 
 		<button v-if="!addingCard" @click="addingCard = true">
@@ -149,16 +157,13 @@
 			<input
 				type="text"
 				placeholder="enter a title"
-				v-model="newCard"
-				@blur="addCard(props.listData)"
-				@keyup.enter="addCard(props.listData)"
-				@keyup.esc="
-					addingCard = false;
-					newCard = '';
-				"
 				ref="inputField"
+				v-model="newCard"
+				@blur="addCard($event, props.listData)"
+				@keyup.enter="addCard($event, props.listData)"
+				@keyup.esc="addCard($event, props.listData)"
 			/>
-			<button @click="addCard(props.listData)">Add</button>
+			<button @click="addCard($event, props.listData)">Add</button>
 		</div>
 	</div>
 </template>
