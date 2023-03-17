@@ -1,10 +1,17 @@
-import { reactive } from "vue";
+import { reactive, watchEffect } from "vue";
 
-import exampleData from "./exampleData.json";
+// create local storage if there's none
+if (!localStorage.getItem("board")) {
+	localStorage.setItem("board", JSON.stringify([]));
+}
 
 const state = reactive({
-	board: exampleData,
-	//board: [],
+	board: JSON.parse(localStorage.getItem("board")),
+});
+
+// update board on it's changes
+watchEffect(() => {
+	localStorage.setItem("board", JSON.stringify(state.board));
 });
 
 export default {
