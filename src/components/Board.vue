@@ -53,13 +53,13 @@
 		</List>
 
 		<div class="new-list">
-			<h3
+			<button
 				v-if="!addingList"
 				class="list-title"
 				@click="addingList = true"
 			>
 				+ Add a list
-			</h3>
+			</button>
 			<div v-else>
 				<input
 					type="text"
@@ -92,7 +92,7 @@
 	}
 	.new-list {
 		background-color: rgb(255, 127, 80, 1%);
-		border: 0.1rem solid transparent;
+		/*border: 0.1rem solid transparent;*/
 		border-radius: 0.5rem;
 		border-color: coral;
 
