@@ -1,28 +1,35 @@
+<script setup>
+	const props = defineProps(["taskData"]);
+</script>
+
 <template>
-	<div class="overlay">
-		<div class="overlay-content">
+	<div class="overlay" @click="$emit('close')">
+		<div class="overlay-content" @click.stop>
 			<div class="header-container">
-				<h1>Task title</h1>
-				<p class="small-text">Date created: 02.02.2222</p>
+				<h1>{{ props.taskData.title }}</h1>
 			</div>
-			<div class="task-description">
+			<div class="content-container">
+				<h4 class="task-labels">Labelname</h4>
 				<h3>Description:</h3>
-				<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-					auctor, magna non tincidunt iaculis, nulla ipsum tempus
-					risus, a blandit nibh augue eget est.
+				<p class="task-description">
+					{{
+						props.taskData.description
+							? props.taskData.description
+							: "there's no description"
+					}}
 				</p>
 			</div>
-			<button>Submit</button>
+			<div class="footer-container">
+				<button @click="$emit('close')">Close</button>
+				<p class="small-text">
+					Date created: {{ props.taskData.dateCreated }}
+				</p>
+			</div>
 		</div>
 	</div>
 </template>
 
 <style scoped>
-	button {
-		margin: 1rem 0;
-		text-align: right;
-	}
 	.overlay {
 		position: fixed;
 		top: 0;
@@ -31,8 +38,9 @@
 		height: 100%;
 		background: rgba(0, 0, 0, 0.5);
 		z-index: 1;
+		user-select: none;
+		pointer-events: auto;
 	}
-
 	.overlay-content {
 		text-align: left;
 		position: absolute;
@@ -42,28 +50,49 @@
 		background: #333;
 		padding: 0 2rem;
 		margin: 0;
-		max-width: 400px;
-		min-width: 400px;
+		max-width: 600px;
+		min-width: 300px;
+		overflow: auto;
 	}
-
+	.header-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin: 0;
+	}
+	.header-container h1 {
+		margin: 1.5rem 0 0;
+	}
+	.task-labels {
+		margin: 1rem 0;
+		padding: 0 0.25rem;
+		display: inline-block;
+		background-color: green;
+	}
 	.task-description {
 		padding: 0.5rem 0.5rem;
 		background-color: rgba(0, 0, 0, 0.4);
-	}
-	.task-description h3 {
 		margin: 0;
+
+		white-space: pre-wrap;
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		max-width: 100%;
 	}
-	.task-description p {
+	.footer-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 		margin: 0;
 	}
 	.small-text {
 		font-size: 12px;
 		text-align: right;
 	}
-
-	.header-container {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
+	.content-container {
+		margin: 0;
+	}
+	.content-container h3 {
+		margin: 0;
 	}
 </style>

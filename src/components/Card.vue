@@ -1,6 +1,7 @@
 <script setup>
 	import { ref, inject, watch } from "vue";
 	import * as utils from "../utils";
+	import Overlay from "./Overlay.vue";
 
 	const store = inject("store");
 	const board = ref(store.state.board);
@@ -79,13 +80,13 @@
 	}
 
 	// handles focusing when editing cards
-	watch(editing, (newVal, oldVal) => {
-		if (newVal && !oldVal) {
-			requestAnimationFrame(() => {
-				inputField.value.focus();
-			});
-		}
-	});
+	//watch(editing, (newVal, oldVal) => {
+	//	if (newVal && !oldVal) {
+	//		requestAnimationFrame(() => {
+	//			inputField.value.focus();
+	//		});
+	//	}
+	//});
 </script>
 
 <template>
@@ -104,18 +105,14 @@
 		@dragover.prevent="cardStyle($event, 'border')"
 		@dragleave="cardStyle($event, 'noBorder')"
 	>
-		<p @click="editing = true" v-if="!editing">
+		<p @click="editing = true">
 			{{ props.taskData.title }}
 		</p>
 
-		<input
-			type="text"
-			ref="inputField"
-			v-model="inputValue"
-			v-else
-			@blur="editCard"
-			@keyup.enter="editCard"
-			@keyup.esc="editCard"
+		<Overlay
+			v-if="editing"
+			:taskData="props.taskData"
+			@close="editing = false"
 		/>
 	</li>
 </template>
