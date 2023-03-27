@@ -1,5 +1,5 @@
 <script setup>
-	import { ref, inject, watch } from "vue";
+	import { ref, inject } from "vue";
 	import * as utils from "../utils";
 	import Overlay from "./Overlay.vue";
 
@@ -9,16 +9,7 @@
 	const props = defineProps(["taskData", "listData"]);
 
 	const editing = ref(false);
-	const inputField = ref(null);
-	const inputValue = ref(props.taskData.title);
-
-	function editCard(e) {
-		if (inputValue.value.trim().length > 0 && e.key !== "Escape")
-			props.taskData.title = inputValue.value;
-
-		inputValue.value = props.taskData.title;
-		editing.value = false;
-	}
+	const isDraggable = store.state.overlayOpen;
 
 	function cardStyle(e, style) {
 		if (e.dataTransfer.getData("isList") === "false")
@@ -78,21 +69,12 @@
 			item.position
 		);
 	}
-
-	// handles focusing when editing cards
-	//watch(editing, (newVal, oldVal) => {
-	//	if (newVal && !oldVal) {
-	//		requestAnimationFrame(() => {
-	//			inputField.value.focus();
-	//		});
-	//	}
-	//});
 </script>
 
 <template>
 	<li
 		class="list-card"
-		draggable="true"
+		v-bind:draggable="isDraggable"
 		@dragstart="
 			cardDragStart(props.taskData, $event);
 			cardStyle($event, 'opacity10');
@@ -105,14 +87,22 @@
 		@dragover.prevent="cardStyle($event, 'border')"
 		@dragleave="cardStyle($event, 'noBorder')"
 	>
-		<p @click="editing = true">
+		<p
+			@click="
+				editing = true;
+				store.state.overlayOpen = false;
+			"
+		>
 			{{ props.taskData.title }}
 		</p>
 
 		<Overlay
 			v-if="editing"
 			:taskData="props.taskData"
-			@close="editing = false"
+			@close="
+				editing = false;
+				store.state.overlayOpen = true;
+			"
 		/>
 	</li>
 </template>

@@ -38,8 +38,7 @@
 		height: 100%;
 		background: rgba(0, 0, 0, 0.5);
 		z-index: 1;
-		user-select: none;
-		pointer-events: auto;
+		user-select: text;
 	}
 	.overlay-content {
 		text-align: left;
@@ -53,6 +52,7 @@
 		max-width: 600px;
 		min-width: 300px;
 		overflow: auto;
+		user-select: auto;
 	}
 	.header-container {
 		display: flex;

@@ -7,6 +7,7 @@ if (!localStorage.getItem("board")) {
 
 const state = reactive({
 	board: JSON.parse(localStorage.getItem("board")),
+	overlayOpen: false,
 });
 
 // update board on it's changes
