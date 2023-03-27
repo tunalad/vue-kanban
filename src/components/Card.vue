@@ -90,7 +90,7 @@
 		<p
 			@click="
 				editing = true;
-				store.state.overlayOpen = false;
+				store.state.itemsDraggable = false;
 			"
 		>
 			{{ props.taskData.title }}
@@ -101,7 +101,7 @@
 			:taskData="props.taskData"
 			@close="
 				editing = false;
-				store.state.overlayOpen = true;
+				store.state.itemsDraggable = true;
 			"
 		/>
 	</li>

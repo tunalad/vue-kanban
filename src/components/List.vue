@@ -121,7 +121,7 @@
 <template>
 	<div
 		class="list"
-		v-bind:draggable="store.state.overlayOpen"
+		v-bind:draggable="store.state.itemsDraggable"
 		@dragstart="
 			listDragStart(props.listData, $event);
 			listStyle($event, 'opacity10');
