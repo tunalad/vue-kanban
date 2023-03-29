@@ -2,6 +2,7 @@
 	import { ref, inject, watch } from "vue";
 	import Card from "./Card.vue";
 	import List from "./List.vue";
+	import Overlay from "./Overlay.vue";
 
 	const store = inject("store");
 	const board = ref(store.state.board);
@@ -73,6 +74,17 @@
 				<button @click="addList">Add</button>
 			</div>
 		</div>
+
+		<Overlay
+			v-if="!store.state.itemsDraggable"
+			:taskData="store.state.editingData"
+			@close="
+				store.state.itemsDraggable = true;
+				store.state.editingData = {};
+			"
+		/>
+
+		{{ store.state.editingData }}
 	</div>
 </template>
 

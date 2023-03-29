@@ -1,15 +1,11 @@
 <script setup>
 	import { ref, inject } from "vue";
 	import * as utils from "../utils";
-	import Overlay from "./Overlay.vue";
 
 	const store = inject("store");
 	const board = ref(store.state.board);
 
 	const props = defineProps(["taskData", "listData"]);
-
-	const editing = ref(false);
-	const isDraggable = store.state.overlayOpen;
 
 	function cardStyle(e, style) {
 		if (e.dataTransfer.getData("isList") === "false")
@@ -86,24 +82,14 @@
 		@dragend="cardStyle($event, 'opacity100')"
 		@dragover.prevent="cardStyle($event, 'border')"
 		@dragleave="cardStyle($event, 'noBorder')"
+		@click="
+			store.state.itemsDraggable = false;
+			store.state.editingData = props.taskData;
+		"
 	>
-		<p
-			@click="
-				editing = true;
-				store.state.itemsDraggable = false;
-			"
-		>
+		<p>
 			{{ props.taskData.title }}
 		</p>
-
-		<Overlay
-			v-if="editing"
-			:taskData="props.taskData"
-			@close="
-				editing = false;
-				store.state.itemsDraggable = true;
-			"
-		/>
 	</li>
 </template>
 

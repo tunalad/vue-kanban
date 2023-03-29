@@ -50,7 +50,7 @@
 		padding: 0 2rem;
 		margin: 0;
 		max-width: 600px;
-		min-width: 300px;
+		min-width: 500px;
 		overflow: auto;
 		user-select: auto;
 	}
