@@ -3,8 +3,9 @@
 	const props = defineProps(["taskData"]);
 
 	const editing = ref(false);
+	const editingElement = ref(null);
 	const inputField = ref(null);
-	const inputValue = ref(props.taskData.title);
+	const inputValue = ref("");
 
 	function editTitle(e) {
 		if (inputValue.value.trim().length > 0 && e.key !== "Escape")
@@ -12,6 +13,16 @@
 
 		inputValue.value = props.taskData.title;
 		editing.value = false;
+		editingElement.value = null;
+	}
+
+	function editDescription(e) {
+		if (inputValue.value.trim().length > 0 && e.key !== "Escape")
+			props.taskData.description = inputValue.value;
+
+		inputValue.value = props.taskData.description;
+		editing.value = false;
+		editingElement.value = null;
 	}
 
 	// handles focusing when editing
@@ -27,31 +38,59 @@
 <template>
 	<div class="overlay" @click="$emit('close')">
 		<div class="overlay-content" @click.stop>
+			<!-- header container -->
 			<div class="header-container">
-				<h1 v-if="!editing" @click="editing = true">
+				<h1
+					v-if="!editing || editingElement !== 'h1'"
+					@click="
+						editing = true;
+						editingElement = 'h1';
+						inputValue = props.taskData.title;
+					"
+				>
 					{{ props.taskData.title }}
 				</h1>
 				<input
 					type="text"
 					ref="inputField"
 					v-model="inputValue"
-					v-else
+					v-if="editing && editingElement === 'h1'"
 					@blur="editTitle"
 					@keyup.enter="editTitle"
 					@keyup.esc="editTitle"
 				/>
 			</div>
+			<!-- content container -->
 			<div class="content-container">
 				<h4 class="task-labels">Labelname</h4>
 				<h3>Description:</h3>
-				<p class="task-description">
-					{{
-						props.taskData.description
-							? props.taskData.description
-							: "there's no description"
-					}}
-				</p>
+				<div class="description-container">
+					<p
+						v-if="!editing || editingElement !== 'p'"
+						@click="
+							editing = true;
+							editingElement = 'p';
+							inputValue = props.taskData.description;
+						"
+					>
+						{{
+							props.taskData.description
+								? props.taskData.description
+								: "there's no description"
+						}}
+					</p>
+					<input
+						type="text"
+						ref="inputField"
+						v-model="inputValue"
+						v-if="editing && editingElement === 'p'"
+						@blur="editDescription"
+						@keyup.enter="editDescription"
+						@keyup.esc="editDescription"
+					/>
+				</div>
 			</div>
+			<!-- footer container -->
 			<div class="footer-container">
 				<button @click="$emit('close')">Close</button>
 				<p class="small-text">
@@ -104,8 +143,8 @@
 		display: inline-block;
 		background-color: green;
 	}
-	.task-description {
-		padding: 0.5rem 0.5rem;
+	.description-container {
+		padding: 0.25rem 0.5rem;
 		background-color: rgba(0, 0, 0, 0.4);
 		margin: 0;
 
@@ -113,6 +152,10 @@
 		overflow-wrap: break-word;
 		word-wrap: break-word;
 		max-width: 100%;
+	}
+	.description-container p {
+		margin: 0;
+		padding: inherit;
 	}
 	.footer-container {
 		display: flex;
