@@ -70,7 +70,7 @@
 <template>
 	<li
 		class="list-card"
-		v-bind:draggable="isDraggable"
+		v-bind:draggable="store.state.itemsDraggable"
 		@dragstart="
 			cardDragStart(props.taskData, $event);
 			cardStyle($event, 'opacity10');
