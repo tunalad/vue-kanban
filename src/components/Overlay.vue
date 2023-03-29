@@ -1,12 +1,45 @@
 <script setup>
+	import { ref, watch } from "vue";
 	const props = defineProps(["taskData"]);
+
+	const editing = ref(false);
+	const inputField = ref(null);
+	const inputValue = ref(props.taskData.title);
+
+	function editTitle(e) {
+		if (inputValue.value.trim().length > 0 && e.key !== "Escape")
+			props.taskData.title = inputValue.value;
+
+		inputValue.value = props.taskData.title;
+		editing.value = false;
+	}
+
+	// handles focusing when editing
+	watch(editing, (newVal, oldVal) => {
+		if (newVal && !oldVal) {
+			requestAnimationFrame(() => {
+				inputField.value.focus();
+			});
+		}
+	});
 </script>
 
 <template>
 	<div class="overlay" @click="$emit('close')">
 		<div class="overlay-content" @click.stop>
 			<div class="header-container">
-				<h1>{{ props.taskData.title }}</h1>
+				<h1 v-if="!editing" @click="editing = true">
+					{{ props.taskData.title }}
+				</h1>
+				<input
+					type="text"
+					ref="inputField"
+					v-model="inputValue"
+					v-else
+					@blur="editTitle"
+					@keyup.enter="editTitle"
+					@keyup.esc="editTitle"
+				/>
 			</div>
 			<div class="content-container">
 				<h4 class="task-labels">Labelname</h4>
@@ -62,6 +95,8 @@
 	}
 	.header-container h1 {
 		margin: 1.5rem 0 0;
+		white-space: normal;
+		word-break: break-all;
 	}
 	.task-labels {
 		margin: 1rem 0;
