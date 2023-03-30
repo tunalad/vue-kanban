@@ -84,7 +84,10 @@
 		@dragleave="cardStyle($event, 'noBorder')"
 		@click="
 			store.state.itemsDraggable = false;
-			store.state.editingData = props.taskData;
+			store.state.editingData = {
+				taskData: props.taskData,
+				listData: props.listData,
+			};
 		"
 	>
 		<p>

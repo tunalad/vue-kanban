@@ -1,6 +1,9 @@
 <script setup>
-	import { ref, watch } from "vue";
-	const props = defineProps(["taskData"]);
+	import { ref, inject, watch } from "vue";
+	import * as utils from "../utils";
+
+	const props = defineProps(["taskData", "listData"]);
+	const emit = defineEmits(["close"]);
 
 	const editing = ref(false);
 	const editingElement = ref(null);
@@ -25,6 +28,14 @@
 		editingElement.value = null;
 	}
 
+	function deleteCard() {
+		utils.removeObject(props.listData.tasks, props.taskData.position);
+
+		inputValue.value = "";
+		editing.value = false;
+		editingElement.value = null;
+		emit("close");
+	}
 	// handles focusing when editing
 	watch(editing, (newVal, oldVal) => {
 		if (newVal && !oldVal) {
@@ -59,6 +70,8 @@
 					@keyup.enter="editTitle"
 					@keyup.esc="editTitle"
 				/>
+
+				<button @click="deleteCard">Delete card</button>
 			</div>
 			<!-- content container -->
 			<div class="content-container">

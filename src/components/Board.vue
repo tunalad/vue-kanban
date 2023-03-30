@@ -77,14 +77,13 @@
 
 		<Overlay
 			v-if="!store.state.itemsDraggable"
-			:taskData="store.state.editingData"
+			:taskData="store.state.editingData.taskData"
+			:listData="store.state.editingData.listData"
 			@close="
 				store.state.itemsDraggable = true;
 				store.state.editingData = {};
 			"
 		/>
-
-		{{ store.state.editingData }}
 	</div>
 </template>
 
