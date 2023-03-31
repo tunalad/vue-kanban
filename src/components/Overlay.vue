@@ -25,8 +25,12 @@
 	}
 
 	function editDescription(e) {
-		if (inputValue.value.trim().length > 0 && e.key !== "Escape")
-			props.taskData.description = inputValue.value;
+		if (e.key !== "Escape") {
+			const inputValueTrimmed = inputValue.value.trim();
+			if (inputValueTrimmed !== props.taskData.description) {
+				props.taskData.description = inputValueTrimmed;
+			}
+		}
 
 		inputValue.value = props.taskData.description;
 		editing.value = false;
@@ -54,6 +58,7 @@
 
 		labelSelector.value.selectedIndex = 0;
 	}
+
 	// handles focusing when editing
 	watch(editing, (newVal, oldVal) => {
 		if (newVal && !oldVal) {
@@ -129,6 +134,11 @@
 				<div class="description-container">
 					<p
 						v-if="!editing || editingElement !== 'p'"
+						:style="
+							props.taskData.description.trim().length === 0
+								? { opacity: 0.25 }
+								: {}
+						"
 						@click="
 							editing = true;
 							editingElement = 'p';

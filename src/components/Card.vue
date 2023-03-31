@@ -93,6 +93,9 @@
 		<p>
 			{{ props.taskData.title }}
 		</p>
+		<div class="icons">
+			<p v-if="props.taskData.description">🗒️</p>
+		</div>
 	</li>
 </template>
 
