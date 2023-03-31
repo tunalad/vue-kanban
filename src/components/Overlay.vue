@@ -2,9 +2,14 @@
 	import { ref, inject, watch } from "vue";
 	import * as utils from "../utils";
 
+	const store = inject("store");
+
 	const props = defineProps(["taskData", "listData"]);
 	const emit = defineEmits(["close"]);
 
+	const boardLabels = ref(store.state.boardLabels);
+
+	const labelSelector = ref(null);
 	const editing = ref(false);
 	const editingElement = ref(null);
 	const inputField = ref(null);
@@ -35,6 +40,19 @@
 		editing.value = false;
 		editingElement.value = null;
 		emit("close");
+	}
+
+	function handleLabel(label) {
+		const index = props.taskData.labels.findIndex(
+			(l) => JSON.stringify(l) === JSON.stringify(label)
+		);
+		if (index !== -1) {
+			props.taskData.labels.splice(index, 1);
+		} else {
+			props.taskData.labels.push(label);
+		}
+
+		labelSelector.value.selectedIndex = 0;
 	}
 	// handles focusing when editing
 	watch(editing, (newVal, oldVal) => {
@@ -75,8 +93,30 @@
 			</div>
 			<!-- content container -->
 			<div class="content-container">
+				<!-- labels container -->
 				<div class="labels-container">
-					<button>+ set label</button>
+					<select ref="labelSelector">
+						<option value="default" disabled selected>
+							+ set label
+						</option>
+						<option
+							v-for="label in boardLabels"
+							:value="label"
+							@click="handleLabel(label)"
+						>
+							{{ label.title }}
+							<span
+								v-if="
+									JSON.stringify(
+										props.taskData.labels
+									).includes(JSON.stringify(label))
+								"
+							>
+								×
+							</span>
+						</option>
+					</select>
+					<!-- displays labels -->
 					<h4
 						v-for="label in props.taskData.labels"
 						:style="{ backgroundColor: label.color }"
@@ -84,6 +124,7 @@
 						{{ label.title }}
 					</h4>
 				</div>
+				<!-- description -->
 				<h3>Description:</h3>
 				<div class="description-container">
 					<p
