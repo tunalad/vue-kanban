@@ -90,6 +90,13 @@
 			};
 		"
 	>
+		<div class="labels">
+			<span
+				v-for="label in props.taskData.labels"
+				class="label-box"
+				:style="{ backgroundColor: label.color }"
+			></span>
+		</div>
 		<p>
 			{{ props.taskData.title }}
 		</p>
@@ -112,6 +119,18 @@
 		list-style-type: none;
 		padding: 0.1rem 1rem;
 		margin: 0.5rem 0;
+		border-radius: 0.3rem;
+	}
+	.labels {
+		margin: 0;
+		padding: 0.25rem 0;
+		display: flex;
+	}
+	.label-box {
+		display: inline-block;
+		width: 100%;
+		height: 4px;
+		margin-right: 5px;
 		border-radius: 0.3rem;
 	}
 </style>
