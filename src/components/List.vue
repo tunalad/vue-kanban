@@ -60,7 +60,7 @@
 			}
 	}
 
-	function testingStuff(e) {
+	function childrenHoverHandling(e) {
 		/* hacky solution for ignoring children of the list when hovering */
 		let hovering = e.target.parentNode;
 
@@ -73,7 +73,7 @@
 		}
 		console.log(hovering.className);
 	}
-	function testingStuffAgain(e) {
+	function childrenDropHandling(e) {
 		/* hacky solution for ignoring children of the list when dropping */
 		let hovering = e.target.parentNode;
 
@@ -176,8 +176,8 @@
 	>
 		<div
 			class="list-header"
-			@dragover.prevent="testingStuff($event)"
-			@drop="testingStuffAgain($event)"
+			@dragover.prevent="childrenHoverHandling($event)"
+			@drop="childrenDropHandling($event)"
 		>
 			<h3 class="list-title" @click="editing = true" v-if="!editing">
 				{{ props.listData.title }}
