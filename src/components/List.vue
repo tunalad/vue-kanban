@@ -34,6 +34,7 @@
 			list.tasks.push({
 				title: newCard.value,
 				description: "",
+				labels: [],
 				position: list.tasks.length,
 				dateCreated: Date.now(),
 			});

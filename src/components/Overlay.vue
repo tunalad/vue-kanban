@@ -75,7 +75,15 @@
 			</div>
 			<!-- content container -->
 			<div class="content-container">
-				<h4 class="task-labels">Labelname</h4>
+				<div class="labels-container">
+					<button>+ set label</button>
+					<h4
+						v-for="label in props.taskData.labels"
+						:style="{ backgroundColor: label.color }"
+					>
+						{{ label.title }}
+					</h4>
+				</div>
 				<h3>Description:</h3>
 				<div class="description-container">
 					<p
@@ -150,11 +158,14 @@
 		white-space: normal;
 		word-break: break-all;
 	}
-	.task-labels {
+	.labels-container {
 		margin: 1rem 0;
 		padding: 0 0.25rem;
-		display: inline-block;
-		background-color: green;
+		display: flex;
+	}
+	.labels-container h4 {
+		margin: 0 0.25rem;
+		padding: 0 0.25rem;
 	}
 	.description-container {
 		padding: 0.25rem 0.5rem;
