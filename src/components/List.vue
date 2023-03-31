@@ -60,6 +60,45 @@
 			}
 	}
 
+	function testingStuff(e) {
+		/* hacky solution for ignoring children of the list when hovering */
+		let hovering = e.target.parentNode;
+
+		if (hovering.className === "list-header")
+			hovering = hovering.parentNode;
+
+		if (hovering.className === "list") {
+			hovering.dispatchEvent(new DragEvent("dragover"));
+			hovering.dispatchEvent(new DragEvent("dragend"));
+		}
+		console.log(hovering.className);
+	}
+	function testingStuffAgain(e) {
+		/* hacky solution for ignoring children of the list when dropping */
+		let hovering = e.target.parentNode;
+
+		if (hovering.className === "list-header")
+			hovering = hovering.parentNode;
+
+		if (hovering.className === "list") {
+			let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+			let dataTransfer = new DataTransfer();
+
+			dataTransfer.setData("text", JSON.stringify(droppedItem));
+
+			// Create the DragEventInit object with the dataTransfer property
+			let eventInit = {
+				dataTransfer: dataTransfer,
+			};
+
+			// Create the DragEvent with the eventInit object
+			let dropEvent = new DragEvent("drop", eventInit);
+
+			// Dispatch the event on the hovering element
+			hovering.dispatchEvent(dropEvent);
+		}
+	}
+
 	/* ============================== */
 	/* DRAGGING FUNCTIONALITIES BELOW */
 	/* ============================== */
@@ -135,19 +174,27 @@
 		@dragover.prevent="listStyle($event, 'border')"
 		@dragleave="listStyle($event, 'noBorder')"
 	>
-		<h3 class="list-title" @click="editing = true" v-if="!editing">
-			{{ props.listData.title }}
-		</h3>
+		<div
+			class="list-header"
+			@dragover.prevent="testingStuff($event)"
+			@drop="testingStuffAgain($event)"
+		>
+			<h3 class="list-title" @click="editing = true" v-if="!editing">
+				{{ props.listData.title }}
+			</h3>
 
-		<input
-			type="text"
-			ref="inputField"
-			v-model="inputValue"
-			v-else
-			@blur="editList"
-			@keyup.enter="editList"
-			@keyup.esc="editList"
-		/>
+			<input
+				type="text"
+				ref="inputField"
+				v-model="inputValue"
+				v-else
+				@blur="editList"
+				@keyup.enter="editList"
+				@keyup.esc="editList"
+			/>
+
+			<span>&bull;&bull;&bull;</span>
+		</div>
 
 		<slot />
 
@@ -188,10 +235,15 @@
 	}
 	.list-title {
 		text-align: left;
-		margin: 0.2rem 0.5rem;
+		margin: 0;
 		background-color: darkblue;
 		display: table;
 		white-space: normal;
 		word-break: break-all;
+	}
+	.list-header {
+		display: flex;
+		justify-content: space-between;
+		padding: 0 0.4rem;
 	}
 </style>
