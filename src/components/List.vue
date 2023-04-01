@@ -23,6 +23,10 @@
 		editing.value = false;
 	}
 
+	function deleteList() {
+		utils.removeObject(board.value, props.listData.position);
+	}
+
 	function addCard(e, list) {
 		if (e.key === "Escape") {
 			addingCard.value = false;
@@ -193,7 +197,7 @@
 				@keyup.esc="editList"
 			/>
 
-			<span>&bull;&bull;&bull;</span>
+			<span @click="deleteList">🗑️</span>
 		</div>
 
 		<slot />
