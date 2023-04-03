@@ -167,7 +167,13 @@
 			<div class="footer-container">
 				<button @click="$emit('close')">Close</button>
 				<p class="small-text">
-					Date created: {{ props.taskData.dateCreated }}
+					Date created:
+					{{
+						new Date(props.taskData.dateCreated).toLocaleString(
+							"en-us",
+							{ day: "numeric", month: "long", year: "numeric" }
+						)
+					}}
 				</p>
 			</div>
 		</div>
