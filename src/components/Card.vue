@@ -8,21 +8,21 @@
 	const props = defineProps(["taskData", "listData"]);
 
 	function cardStyle(e, style) {
-		if (e.dataTransfer.getData("isList") === "false")
-			switch (style) {
-				case "border":
-					e.currentTarget.style.border = "2px solid pink";
-					break;
-				case "noBorder":
-					e.currentTarget.style.border = "";
-					break;
-				case "opacity10":
-					e.target.style.opacity = 0.1;
-					break;
-				case "opacity100":
-					e.target.style.opacity = 1;
-					break;
-			}
+		//if (e.dataTransfer.getData("isList") === "false")
+		switch (style) {
+			case "border":
+				e.currentTarget.style.border = "2px solid pink";
+				break;
+			case "noBorder":
+				e.currentTarget.style.border = "";
+				break;
+			case "opacity10":
+				e.target.style.opacity = 0.1;
+				break;
+			case "opacity100":
+				e.target.style.opacity = 1;
+				break;
+		}
 	}
 
 	/* ============================== */

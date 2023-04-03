@@ -50,10 +50,10 @@
 		if (e.target.classList.contains("list"))
 			switch (style) {
 				case "border":
-					e.currentTarget.style.border = "2px solid pink";
+					e.target.style.border = "2px solid pink";
 					break;
 				case "noBorder":
-					e.currentTarget.style.border = "";
+					e.target.style.border = "";
 					break;
 				case "opacity10":
 					e.target.style.opacity = 0.1;
@@ -253,5 +253,6 @@
 		display: flex;
 		justify-content: space-between;
 		padding: 0 0.4rem;
+		background-color: chocolate;
 	}
 </style>
