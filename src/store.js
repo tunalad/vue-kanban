@@ -8,11 +8,11 @@ if (!localStorage.getItem("board")) {
 const state = reactive({
 	board: JSON.parse(localStorage.getItem("board")),
 	boardLabels: [
-		{ title: "label01", color: "purple" },
-		{ title: "label02", color: "cyan" },
-		{ title: "label03", color: "pink" },
-		{ title: "label04", color: "brown" },
-		{ title: "label05", color: "black" },
+		{ id: 1, title: "label01", color: "purple" },
+		{ id: 2, title: "label02", color: "cyan" },
+		{ id: 3, title: "label03", color: "pink" },
+		{ id: 4, title: "label04", color: "brown" },
+		{ id: 5, title: "label05", color: "black" },
 	],
 	itemsDraggable: true,
 	editingData: {},

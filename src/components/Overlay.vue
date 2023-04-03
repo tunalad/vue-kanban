@@ -9,7 +9,7 @@
 
 	const boardLabels = ref(store.state.boardLabels);
 
-	const labelSelector = ref(null);
+	const labelSelector = ref("default");
 	const editing = ref(false);
 	const editingElement = ref(null);
 	const inputField = ref(null);
@@ -46,13 +46,18 @@
 		emit("close");
 	}
 
-	function handleLabel(label) {
-		const index = props.taskData.labels.findIndex(
-			(l) => JSON.stringify(l) === JSON.stringify(label)
+	function handleLabel(e) {
+		const index = parseInt(e.target.value);
+		const label = store.state.boardLabels.find((item) => item.id === index);
+
+		const labelIndex = props.taskData.labels.findIndex(
+			(item) => item.id === index
 		);
-		if (index !== -1) {
-			props.taskData.labels.splice(index, 1);
+		if (labelIndex !== -1) {
+			// If the label already exists, remove it from the array
+			props.taskData.labels.splice(labelIndex, 1);
 		} else {
+			// If the label doesn't exist, push it to the array
 			props.taskData.labels.push(label);
 		}
 
@@ -100,15 +105,11 @@
 			<div class="content-container">
 				<!-- labels container -->
 				<div class="labels-container">
-					<select ref="labelSelector">
+					<select ref="labelSelector" @change="handleLabel">
 						<option value="default" disabled selected>
 							+ set label
 						</option>
-						<option
-							v-for="label in boardLabels"
-							:value="label"
-							@click="handleLabel(label)"
-						>
+						<option v-for="label in boardLabels" :value="label.id">
 							{{ label.title }}
 							<span
 								v-if="
