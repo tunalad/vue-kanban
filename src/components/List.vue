@@ -75,8 +75,8 @@
 			hovering.dispatchEvent(new DragEvent("dragover"));
 			hovering.dispatchEvent(new DragEvent("dragend"));
 		}
-		console.log(hovering.className);
 	}
+
 	function childrenDropHandling(e) {
 		/* hacky solution for ignoring children of the list when dropping */
 		let hovering = e.target.parentNode;
@@ -85,10 +85,14 @@
 			hovering = hovering.parentNode;
 
 		if (hovering.className === "list") {
-			let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
 			let dataTransfer = new DataTransfer();
 
-			dataTransfer.setData("text", JSON.stringify(droppedItem));
+			dataTransfer.setData("text", e.dataTransfer.getData("text"));
+			dataTransfer.setData("isList", e.dataTransfer.getData("isList"));
+			dataTransfer.setData(
+				"fromList",
+				e.dataTransfer.getData("fromList")
+			);
 
 			// Create the DragEventInit object with the dataTransfer property
 			let eventInit = {
