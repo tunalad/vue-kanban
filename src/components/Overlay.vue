@@ -152,15 +152,14 @@
 								: "there's no description"
 						}}
 					</p>
-					<input
+					<textarea
 						type="text"
 						ref="inputField"
 						v-model="inputValue"
 						v-if="editing && editingElement === 'p'"
 						@blur="editDescription"
-						@keyup.enter="editDescription"
 						@keyup.esc="editDescription"
-					/>
+					></textarea>
 				</div>
 			</div>
 			<!-- footer container -->
@@ -209,12 +208,13 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin: 0;
+		margin: 1rem 0;
 	}
 	.header-container h1 {
-		margin: 1.5rem 0 0;
+		margin: 0 0;
 		white-space: normal;
 		word-break: break-all;
+		width: 100%;
 	}
 	.labels-container {
 		margin: 1rem 0;
@@ -234,8 +234,25 @@
 		overflow-wrap: break-word;
 		word-wrap: break-word;
 		max-width: 100%;
+		overflow: auto;
+		min-height: 10rem;
+		max-height: 10rem;
+		display: flex;
+		flex-direction: column;
 	}
 	.description-container p {
+		margin: 0;
+		padding: inherit;
+		width: inherit;
+		height: 100%;
+		flex-grow: 1;
+	}
+	.description-container textarea {
+		width: 100%;
+		min-height: 10rem;
+		max-height: 10rem;
+		box-sizing: border-box;
+		resize: none;
 		margin: 0;
 		padding: inherit;
 	}
