@@ -61,6 +61,7 @@
 			props.taskData.labels.push(label);
 		}
 
+		props.taskData.labels.sort((a, b) => a.id - b.id);
 		labelSelector.value.selectedIndex = 0;
 	}
 
