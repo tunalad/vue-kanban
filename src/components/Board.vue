@@ -4,6 +4,7 @@
 	import List from "./List.vue";
 	import Overlay from "./Overlay.vue";
 	import OverlayCard from "./OverlayCard.vue";
+	import OverlayLabels from "./OverlayLabels.vue";
 
 	const store = inject("store");
 	const board = ref(store.state.board);
@@ -87,6 +88,10 @@
 				:taskData="store.state.editingData.taskData"
 				:listData="store.state.editingData.listData"
 			/>
+		</Overlay>
+
+		<Overlay>
+			<OverlayLabels />
 		</Overlay>
 	</div>
 </template>
