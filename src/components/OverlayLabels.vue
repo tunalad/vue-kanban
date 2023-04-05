@@ -19,7 +19,23 @@
 	}
 
 	function deleteLabel(label) {
-		console.log(label.title);
+		const lists = store.state.board;
+
+		for (let list in lists) {
+			let cards = lists[list].tasks;
+			for (let card in cards) {
+				// removes the label from cards where found
+				cards[card].labels = cards[card].labels.filter(
+					(item) => item !== label
+				);
+			}
+		}
+
+		// removes label globally
+		store.state.boardLabels.splice(
+			store.state.boardLabels.findIndex((item) => item.id === label.id),
+			1
+		);
 	}
 </script>
 
@@ -32,6 +48,7 @@
 	<div class="content-container">
 		<!-- list labels -->
 		<ul class="labels-list" v-if="!editing && !adding">
+			<p v-if="store.state.boardLabels.length < 1">You have no labels</p>
 			<li class="label" v-for="label in store.state.boardLabels">
 				<button title="Delete label" @click="deleteLabel(label)">
 					🗑️
