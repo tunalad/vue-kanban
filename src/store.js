@@ -28,6 +28,7 @@ const state = reactive({
 // update board on it's changes
 watchEffect(() => {
 	localStorage.setItem("board", JSON.stringify(state.board));
+	localStorage.setItem("boardLabels", JSON.stringify(state.boardLabels));
 });
 
 export default {

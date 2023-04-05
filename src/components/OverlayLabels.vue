@@ -4,12 +4,34 @@
 	const store = inject("store");
 
 	const adding = ref(false);
+	const addingObject = ref({
+		id: null,
+		title: "",
+		color: "",
+	});
+
 	const editing = ref(false);
 	const editingLabel = ref(null);
 
-	function addLabel() {
-		console.log("adding label");
-		adding.value = false;
+	function addLabel(action = "save") {
+		//console.log(addingObject.value);
+		if (action === "cancel") {
+			adding.value = false;
+			addingObject.value = {
+				id: null,
+				title: "",
+				color: "",
+			};
+		}
+
+		if (action === "save") {
+			const maxId = Math.max(
+				...store.state.boardLabels.map((label) => label.id)
+			);
+
+			addingObject.value.id = maxId + 1;
+			store.state.boardLabels.push(addingObject.value);
+		}
 	}
 
 	function editLabel(label) {
@@ -94,13 +116,20 @@
 		<!-- adding a label-->
 		<div v-if="adding">
 			<label for="label-title">Label title:</label>
-			<input type="text" id="label-title" />
+			<input type="text" v-model="addingObject.title" />
 			<br />
 			<label for="label-color">Label color:</label>
-			<input type="color" id="label-color" />
+			<input type="color" v-model="addingObject.color" />
 			<br />
-			<button @click="addLabel">Save</button>
-			<button @click="adding = false">Cancel</button>
+			<button
+				@click="
+					addLabel();
+					addLabel('cancel');
+				"
+			>
+				Save
+			</button>
+			<button @click="addLabel('cancel')">Cancel</button>
 		</div>
 	</div>
 	<!-- footer container -->
