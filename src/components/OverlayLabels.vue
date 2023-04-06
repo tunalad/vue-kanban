@@ -12,6 +12,7 @@
 
 	const editing = ref(false);
 	const editingLabel = ref(null);
+	const editingLabelNew = ref(null);
 
 	function addLabel(action = "save") {
 		//console.log(addingObject.value);
@@ -34,10 +35,13 @@
 		}
 	}
 
-	function editLabel(label) {
-		console.log(`edited label ${label.title}`);
+	function editLabel(oldData, newData) {
+		oldData.title = newData.title;
+		oldData.color = newData.color;
+
 		editing.value = false;
 		editingLabel.value = null;
+		editingLabelNew.value = null;
 	}
 
 	function deleteLabel(label) {
@@ -80,6 +84,7 @@
 					@click="
 						editing = true;
 						editingLabel = label;
+						editingLabelNew = label;
 					"
 				>
 					✏️
@@ -97,16 +102,39 @@
 		<!-- edit a label -->
 		<div v-if="editing">
 			<label for="label-title">Label title:</label>
-			<input type="text" id="label-title" :value="editingLabel.title" />
+			<input
+				type="text"
+				id="label-title"
+				:value="editingLabelNew.title"
+				@input="
+					editingLabelNew = {
+						...editingLabelNew,
+						title: $event.target.value,
+					}
+				"
+			/>
 			<br />
 			<label for="label-color">Label color:</label>
-			<input type="color" id="label-color" :value="editingLabel.color" />
+			<input
+				type="color"
+				id="label-color"
+				:value="editingLabelNew.color"
+				@input="
+					editingLabelNew = {
+						...editingLabelNew,
+						color: $event.target.value,
+					}
+				"
+			/>
 			<br />
-			<button @click="editLabel(editingLabel)">Save</button>
+			<button @click="editLabel(editingLabel, editingLabelNew)">
+				Save
+			</button>
 			<button
 				@click="
 					editing = false;
 					editingLabel = null;
+					editingLabelNew = null;
 				"
 			>
 				Cancel
