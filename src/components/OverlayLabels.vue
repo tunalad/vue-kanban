@@ -1,6 +1,8 @@
 <script setup>
 	import { ref, inject } from "vue";
 
+	const emit = defineEmits(["close"]);
+
 	const store = inject("store");
 
 	const adding = ref(false);
@@ -162,7 +164,7 @@
 	</div>
 	<!-- footer container -->
 	<div class="footer-container">
-		<button>Close</button>
+		<button @click="$emit('close')">Close</button>
 	</div>
 </template>
 

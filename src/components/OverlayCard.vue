@@ -5,7 +5,7 @@
 	const store = inject("store");
 
 	const props = defineProps(["taskData", "listData"]);
-	const emit = defineEmits(["close"]);
+	const emit = defineEmits(["close", "toggleLabelManager"]);
 
 	const boardLabels = ref(store.state.boardLabels);
 
@@ -127,6 +127,9 @@
 				{{ label.title }}
 			</h4>
 		</div>
+
+		<a href="#" @click="$emit('toggleLabelManager')">edit labels</a>
+
 		<!-- description -->
 		<h3>Description:</h3>
 		<div class="description-container">

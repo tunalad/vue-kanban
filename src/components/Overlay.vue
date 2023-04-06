@@ -7,6 +7,8 @@
 
 	const emit = defineEmits(["close"]);
 
+	const labelManager = ref(false);
+
 	function closeOverlay() {
 		store.state.itemsDraggable = true;
 		store.state.editingData = {};
@@ -19,8 +21,11 @@
 			<OverlayCard
 				:taskData="store.state.editingData.taskData"
 				:listData="store.state.editingData.listData"
+				v-if="!labelManager"
+				@toggleLabelManager="labelManager = true"
 				@close="closeOverlay"
 			/>
+			<OverlayLabels v-if="labelManager" @close="labelManager = false" />
 		</div>
 	</div>
 </template>
