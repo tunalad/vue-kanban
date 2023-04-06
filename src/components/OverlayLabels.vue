@@ -9,7 +9,7 @@
 	const addingObject = ref({
 		id: null,
 		title: "",
-		color: "",
+		color: "#000",
 	});
 
 	const editing = ref(false);
@@ -17,22 +17,17 @@
 	const editingLabelNew = ref(null);
 
 	function addLabel(action = "save") {
-		//console.log(addingObject.value);
 		if (action === "cancel") {
 			adding.value = false;
 			addingObject.value = {
 				id: null,
 				title: "",
-				color: "",
+				color: "#000",
 			};
 		}
 
 		if (action === "save") {
-			const maxId = Math.max(
-				...store.state.boardLabels.map((label) => label.id)
-			);
-
-			addingObject.value.id = maxId + 1;
+			addingObject.value.id = new Date().getTime();
 			store.state.boardLabels.push(addingObject.value);
 		}
 	}
