@@ -33,8 +33,30 @@
 	}
 
 	function editLabel(oldData, newData) {
-		oldData.title = newData.title;
-		oldData.color = newData.color;
+		//oldData.title = newData.title;
+		//oldData.color = newData.color;
+		//console.log(store.state.editingData.taskData.labels[oldData.id]);
+
+		const board = ref(store.state.board);
+
+		// updates card colors
+		for (let lists in board.value) {
+			let tasks = board.value[lists].tasks;
+			for (let task in tasks) {
+				let labels = tasks[task].labels;
+				for (let l in labels) {
+					if (newData.id === labels[l].id) {
+						labels[l].title = newData.title;
+						labels[l].color = newData.color;
+					}
+				}
+			}
+		}
+
+		// updates label color
+		const label = store.state.boardLabels.find((i) => i.id === newData.id);
+		label.title = newData.title;
+		label.color = newData.color;
 
 		editing.value = false;
 		editingLabel.value = null;
@@ -42,15 +64,15 @@
 	}
 
 	function deleteLabel(label) {
-		const lists = store.state.board;
+		const board = ref(store.state.board);
 
-		for (let list in lists) {
-			let cards = lists[list].tasks;
-			for (let card in cards) {
-				// removes the label from cards where found
-				cards[card].labels = cards[card].labels.filter(
-					(item) => item !== label
-				);
+		for (let lists in board.value) {
+			let tasks = board.value[lists].tasks;
+			for (let task in tasks) {
+				let labels = tasks[task].labels;
+				for (let l in labels) {
+					if (label.id === labels[l].id) labels.splice(l, 1);
+				}
 			}
 		}
 
