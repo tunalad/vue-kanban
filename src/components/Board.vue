@@ -3,8 +3,6 @@
 	import Card from "./Card.vue";
 	import List from "./List.vue";
 	import Overlay from "./Overlay.vue";
-	import OverlayCard from "./OverlayCard.vue";
-	import OverlayLabels from "./OverlayLabels.vue";
 
 	const store = inject("store");
 	const board = ref(store.state.board);
@@ -77,22 +75,7 @@
 			</div>
 		</div>
 
-		<Overlay
-			v-if="!store.state.itemsDraggable"
-			@close="
-				store.state.itemsDraggable = true;
-				store.state.editingData = {};
-			"
-		>
-			<OverlayCard
-				:taskData="store.state.editingData.taskData"
-				:listData="store.state.editingData.listData"
-			/>
-		</Overlay>
-
-		<Overlay>
-			<OverlayLabels />
-		</Overlay>
+		<Overlay v-if="!store.state.itemsDraggable" />
 	</div>
 </template>
 

@@ -1,11 +1,26 @@
 <script setup>
+	import { ref, inject } from "vue";
+	import OverlayCard from "./OverlayCard.vue";
+	import OverlayLabels from "./OverlayLabels.vue";
+
+	const store = inject("store");
+
 	const emit = defineEmits(["close"]);
+
+	function closeOverlay() {
+		store.state.itemsDraggable = true;
+		store.state.editingData = {};
+	}
 </script>
 
 <template>
-	<div class="overlay" @click="$emit('close')">
+	<div class="overlay" @click="closeOverlay">
 		<div class="overlay-content" @click.stop>
-			<slot />
+			<OverlayCard
+				:taskData="store.state.editingData.taskData"
+				:listData="store.state.editingData.listData"
+				@close="closeOverlay"
+			/>
 		</div>
 	</div>
 </template>
