@@ -59,6 +59,7 @@ class DBHelper {
 
 	table(tableName) {
 		return {
+			name: tableName,
 			dropTable: (callback) => {
 				const sql = `DROP TABLE IF EXISTS ${tableName}`;
 				this.execSql(sql, callback);

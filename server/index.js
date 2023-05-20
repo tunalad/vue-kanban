@@ -7,6 +7,7 @@ const app = express();
 const PORT = 1337;
 
 app.use(express.json());
+
 app.use(routes);
 
 app.listen(PORT, async () => {
