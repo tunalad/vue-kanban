@@ -2,12 +2,24 @@ const express = require("express");
 const router = express.Router();
 
 const db = require("../database");
-const tableName = "board";
+const tableName = "list";
 
 /* GET */
 router.get("/", (req, res) => {
 	try {
-		db.execSql(`SELECT * FROM ${tableName}`, (e, data) => {
+		const { date_created, board_id, position } = req.query;
+
+		let sql = `SELECT * FROM ${tableName}`;
+
+		if (Object.keys(req.query).length > 0) {
+			let conditions = [];
+			if (date_created) conditions.push(`date_created=${date_created}`);
+			if (board_id) conditions.push(`board_id=${board_id}`);
+			if (position) conditions.push(`position=${position}`);
+			sql += ` WHERE ${conditions.join(" AND ")}`;
+		}
+
+		db.execSql(sql, (e, data) => {
 			if (e) res.status(500).json({ error: e.message });
 			else res.status(200).json(data);
 		});
@@ -36,19 +48,22 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
 	try {
 		const table = db.table(tableName);
-		const { title, password } = req.body;
+		const { title, date_created, position, board_id } = req.body;
 
 		table.insertRow(
 			{
 				title: title,
-				password: password,
+				date_created: date_created, // make sure it's unix time,
+				position: position,
+
+				board_id: board_id,
 			},
 			(e) => {
 				if (e)
-					res.status(500).json({ error: "failed to create board" });
+					res.status(500).json({ error: "failed to create a list" });
 				else
 					res.status(201).json({
-						message: "board created successfully",
+						message: "list created successfully",
 					});
 			}
 		);
@@ -77,9 +92,9 @@ router.patch("/:id", async (req, res) => {
 	try {
 		const table = db.table(tableName);
 		const tableId = req.params.id;
-		const { title, password } = req.body;
+		const { title, date_created, position } = req.body;
 
-		const board = await new Promise((res, rej) => {
+		const list = await new Promise((res, rej) => {
 			db.execSql(
 				`SELECT * FROM ${table.name} WHERE id=${tableId}`,
 				(e, data) => {
@@ -89,12 +104,13 @@ router.patch("/:id", async (req, res) => {
 			);
 		});
 
-		if (!board) res.status(404).json({ message: "board doesn't exist" });
+		if (!list) res.status(404).json({ message: "list doesn't exist" });
 		else
 			table.updateRowNew(
 				{
-					title: title || board.title,
-					password: password || board.password,
+					title: title || list.title,
+					position: position || list.position,
+					// board_id shouldn't be updated. Same goes for creation date, doesn't make sense
 				},
 				{ id: tableId },
 				(e) => {
