@@ -47,7 +47,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
 	try {
 		const table = db.table(tableName);
-		const { card_id, label_id } = req.query;
+		const { card_id, label_id } = req.body;
 
 		table.insertRow(
 			{
@@ -56,10 +56,12 @@ router.post("/", (req, res) => {
 			},
 			(e) => {
 				if (e)
-					res.status(500).json({ error: "failed to create a label" });
+					res.status(500).json({
+						error: "failed to create a card_label",
+					});
 				else
 					res.status(201).json({
-						message: "label created successfully",
+						message: "card_label created successfully",
 					});
 			}
 		);
