@@ -4,10 +4,12 @@ const router = express.Router();
 const board = require("./board");
 const list = require("./list");
 const card = require("./card");
+const label = require("./label");
 
 router.use("/board", board);
 router.use("/list", list);
 router.use("/card", card);
+router.use("/label", label);
 
 router.get("/", (req, res) => {
 	res.json({
@@ -78,7 +80,28 @@ router.get("/", (req, res) => {
 				DELETE: "deletes card with specified id",
 			},
 			/* LABEL */
-
+			"/label": {
+				GET: {
+					description: "returns all the label",
+					queryParameters: {
+						date_created: "filter by date created",
+						board_id: "filter by board id",
+						color: "filter by color",
+					},
+				},
+				POST: {
+					description: "creates a new label",
+					requestBody: "'title', 'date_created', 'color', 'board_id'",
+				},
+			},
+			"/label/:id": {
+				GET: "returns label with specified id",
+				PATCH: {
+					description: "updates the label with the specified id",
+					requestBody: "optional 'title', 'color', 'board_id'",
+				},
+				DELETE: "deletes list with specified id",
+			},
 			/* CARD_LABEL */
 		},
 	});
