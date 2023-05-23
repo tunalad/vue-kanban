@@ -5,7 +5,8 @@
 	import Overlay from "./Overlay.vue";
 
 	const store = inject("store");
-	const board = ref(store.state.board);
+	//const board = ref(store.state.board);
+	const board = ref([]);
 
 	board.value.sort((a, b) => a.position - b.position);
 
@@ -31,6 +32,15 @@
 		newList.value = "";
 	}
 
+	// watches the store.state.board changes
+	watch(
+		() => store.state.board,
+		(newBoard) => {
+			board.value = newBoard;
+		},
+		{ immediate: true }
+	);
+
 	// handles focusing when adding lists
 	watch(addingList, (newVal, oldVal) => {
 		if (newVal && !oldVal) {
@@ -46,8 +56,8 @@
 		<List v-for="list in board" :listData="list" :boardData="board">
 			<ul class="cards-list">
 				<Card
-					v-for="task in list.tasks"
-					:taskData="task"
+					v-for="card in list.cards"
+					:taskData="card"
 					:listData="list"
 				/>
 			</ul>

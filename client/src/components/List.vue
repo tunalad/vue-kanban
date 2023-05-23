@@ -6,7 +6,7 @@
 	const board = ref(store.state.board);
 
 	const props = defineProps(["listData", "boardData"]);
-	props.listData.tasks.sort((a, b) => a.position - b.position);
+	props.listData.cards.sort((a, b) => a.position - b.position);
 
 	const editing = ref(false);
 	const inputField = ref(null);
