@@ -36,4 +36,13 @@ export default {
 			}
 		);
 	},
+
+	patchList(id, data) {
+		console.log(data);
+		return apiClient.patch(`/list/${id}`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
 };

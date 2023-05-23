@@ -1,6 +1,7 @@
 <script setup>
 	import { ref, inject, watch } from "vue";
 	import * as utils from "../utils";
+	import api from "../api";
 
 	const store = inject("store");
 	const board = ref(store.state.board);
@@ -15,9 +16,21 @@
 	const addingCard = ref(false);
 	const newCard = ref("");
 
-	function editList(e) {
-		if (inputValue.value.trim().length > 0 && e.key !== "Escape")
+	async function editList(e) {
+		if (inputValue.value.trim().length > 0 && e.key !== "Escape") {
+			// local
 			props.listData.title = inputValue.value;
+
+			//server
+			try {
+				const response = await api.patchList(props.listData.id, {
+					title: inputValue.value,
+				});
+				console.log(response);
+			} catch (e) {
+				console.error(e);
+			}
+		}
 
 		inputValue.value = props.listData.title;
 		editing.value = false;
