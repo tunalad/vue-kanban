@@ -39,7 +39,7 @@ router.get("/:id/full", async (req, res) => {
 		const boardQuery = `SELECT * FROM ${tableName} WHERE id=${itemId}`;
 		const listsQuery = `SELECT * FROM list WHERE board_id=${itemId}`;
 		const cardsQuery = `SELECT * FROM card WHERE list_id IN (SELECT id FROM list WHERE board_id=${itemId})`;
-		const labelsQuery = `SELECT * FROM list WHERE board_id=${itemId}`;
+		const labelsQuery = `SELECT * FROM label WHERE board_id=${itemId}`;
 		const cardLabelQuery = `SELECT * FROM card_label WHERE card_id IN (SELECT id FROM card WHERE list_id IN (SELECT id FROM list WHERE board_id=${itemId}))`;
 
 		const getSqlData = (query) => {
@@ -112,7 +112,7 @@ router.get("/:id/full", async (req, res) => {
 					(label) => label.board_id === board.id
 				),
 			};
-
+			console.log(labelsData);
 			return nestedBoard;
 		});
 
