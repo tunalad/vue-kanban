@@ -12,6 +12,7 @@ async function getBoard(id) {
 }
 
 const state = reactive({
+	board_id: null,
 	board: [],
 	boardLabels: [],
 	itemsDraggable: true,
@@ -29,6 +30,7 @@ const state = reactive({
 
 		state.board = JSON.parse(localStorage.getItem("board"));
 		state.boardLabels = JSON.parse(localStorage.getItem("boardLabels"));
+		state.board_id = boardData.id;
 	}
 })();
 

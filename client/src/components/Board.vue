@@ -1,5 +1,6 @@
 <script setup>
 	import { ref, inject, watch } from "vue";
+	import api from "../api";
 	import Card from "./Card.vue";
 	import List from "./List.vue";
 	import Overlay from "./Overlay.vue";
@@ -14,20 +15,37 @@
 	const newList = ref("");
 	const inputField = ref(null);
 
-	function addList(e) {
+	async function addList(e) {
 		if (e.key === "Escape") {
 			addingList.value = false;
 			newList.value = "";
 			return;
 		}
 
+		// localStorage update
 		if (newList.value.trim().length !== 0 || !newList)
 			board.value.push({
 				title: newList.value,
 				dateCreated: Date.now(),
 				position: board.value.length,
-				tasks: [],
+				cards: [], // local thing only
 			});
+
+		// server update
+		//const { title, date_created, position, board_id } = data;
+		try {
+			const response = await api.postList({
+				title: newList.value,
+				date_created: Date.now(),
+				position: board.value.length,
+				//cards: [],
+				board_id: store.state.board_id, // server thing only
+			});
+			console.log(response);
+		} catch (e) {
+			console.error(e);
+		}
+
 		addingList.value = false;
 		newList.value = "";
 	}

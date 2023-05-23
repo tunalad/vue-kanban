@@ -112,7 +112,6 @@ router.get("/:id/full", async (req, res) => {
 					(label) => label.board_id === board.id
 				),
 			};
-			console.log(labelsData);
 			return nestedBoard;
 		});
 
