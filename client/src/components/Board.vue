@@ -22,23 +22,23 @@
 			return;
 		}
 
+		const pushData = {
+			title: newList.value,
+			date_created: Date.now(),
+			position: board.value.length,
+		};
+
 		// localStorage update
 		if (newList.value.trim().length !== 0 || !newList)
 			board.value.push({
-				title: newList.value,
-				dateCreated: Date.now(),
-				position: board.value.length,
+				...pushData,
 				cards: [], // local thing only
 			});
 
 		// server update
-		//const { title, date_created, position, board_id } = data;
 		try {
 			const response = await api.postList({
-				title: newList.value,
-				date_created: Date.now(),
-				position: board.value.length,
-				//cards: [],
+				...pushData,
 				board_id: store.state.board_id, // server thing only
 			});
 			console.log(response);
