@@ -73,12 +73,42 @@ router.post("/", (req, res) => {
 });
 
 /* DELETE */
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
 	try {
 		const table = db.table(tableName);
 		const tableId = req.params.id;
 
+		// get list data
+		const list = await new Promise((res, rej) => {
+			db.execSql(
+				`SELECT * FROM ${table.name} WHERE id=${tableId}`,
+				(e, data) => {
+					if (e) return rej(e);
+					else res(data[0]);
+				}
+			);
+		});
+
+		// delete item
 		table.deleteRow({ id: tableId }, (e) => {
+			if (e) res.status(500).json({ error: e });
+			else res.status(204).end();
+		});
+
+		// get items where position > deleted item's position
+		const toUpdate = await new Promise((res, rej) => {
+			db.execSql(
+				`SELECT * FROM ${table.name} WHERE board_id=${list.board_id} AND position>${list.position}`,
+				(e, data) => {
+					if (e) return rej(e);
+					else res(data);
+				}
+			);
+		});
+
+		// -1 their positions
+		const sql = `UPDATE ${table.name} SET position=position-1 WHERE board_id=${list.board_id} AND position>${list.position}`;
+		db.execSql(sql, (e) => {
 			if (e) res.status(500).json({ error: e });
 			else res.status(204).end();
 		});

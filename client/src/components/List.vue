@@ -21,7 +21,7 @@
 			// local
 			props.listData.title = inputValue.value;
 
-			//server
+			// server
 			try {
 				const response = await api.patchList(props.listData.id, {
 					title: inputValue.value,
@@ -36,8 +36,17 @@
 		editing.value = false;
 	}
 
-	function deleteList() {
-		utils.removeObject(board.value, props.listData.position);
+	async function deleteList() {
+		try {
+			// local
+			utils.removeObject(board.value, props.listData.position);
+
+			// server
+			const response = await api.deleteList(props.listData.id);
+			console.log(response);
+		} catch (e) {
+			console.error(e);
+		}
 	}
 
 	function addCard(e, list) {

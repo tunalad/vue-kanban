@@ -19,8 +19,6 @@ export default {
 	postList(data) {
 		const { title, date_created, position, board_id } = data;
 
-		console.log(data);
-
 		return apiClient.post(
 			"/list",
 			{
@@ -38,8 +36,15 @@ export default {
 	},
 
 	patchList(id, data) {
-		console.log(data);
 		return apiClient.patch(`/list/${id}`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
+
+	deleteList(id) {
+		return apiClient.delete(`/list/${id}`, {
 			headers: {
 				"Content-Type": "application/json",
 			},
