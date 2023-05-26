@@ -60,6 +60,24 @@ class DBHelper {
 	table(tableName) {
 		return {
 			name: tableName,
+			selectAll: (whereCondition, callback) => {
+				let sql = `SELECT * FROM ${tableName}`;
+
+				if (whereCondition && Object.keys(whereCondition).length > 0) {
+					const conditions = Object.entries(whereCondition).map(
+						([key, value]) => {
+							const conditionValue =
+								typeof value === "string"
+									? `'${value}'`
+									: value;
+							return `${key}=${conditionValue}`;
+						}
+					);
+					sql += ` WHERE ${conditions.join(" AND ")}`;
+				}
+
+				this.execSql(sql, callback);
+			},
 			dropTable: (callback) => {
 				const sql = `DROP TABLE IF EXISTS ${tableName}`;
 				this.execSql(sql, callback);
@@ -150,7 +168,6 @@ class DBHelper {
 					);
 					sql += ` WHERE ${conditions.join(" AND ")}`;
 				}
-				console.log(sql);
 				this.execSql(sql, callback);
 			},
 			updateRowNew: (newValues, condition, callback) => {
