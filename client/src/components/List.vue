@@ -7,7 +7,7 @@
 	const board = ref(store.state.board);
 
 	const props = defineProps(["listData", "boardData"]);
-	props.listData.cards.sort((a, b) => a.position - b.position);
+	//props.listData.cards.sort((a, b) => a.position - b.position);
 
 	const editing = ref(false);
 	const inputField = ref(null);
@@ -26,7 +26,6 @@
 				const response = await api.patchList(props.listData.id, {
 					title: inputValue.value,
 				});
-				console.log(response);
 			} catch (e) {
 				console.error(e);
 			}
@@ -43,7 +42,6 @@
 
 			// server
 			const response = await api.deleteList(props.listData.id);
-			console.log(response);
 		} catch (e) {
 			console.error(e);
 		}
@@ -176,14 +174,10 @@
 			toRaw(item).position
 		);
 
-		// DOESN'T WORK WHEN MOVING FROM HIGHER TO LOWER POSITION
-		console.log("item pos", newPosition);
-		console.log("droppedItem pos", oldPosition);
 		// server
 		const response = await api.patchList(toRaw(droppedItem).id, {
 			position: newPosition,
 		});
-		console.log(response);
 	}
 
 	// handles focusing when editing lists
@@ -239,8 +233,6 @@
 				@keyup.enter="editList"
 				@keyup.esc="editList"
 			/>
-			{{ props.listData.id }} |
-			{{ props.listData.position }}
 			<span @click="deleteList">🗑️</span>
 		</div>
 

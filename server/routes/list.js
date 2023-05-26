@@ -6,26 +6,21 @@ const tableName = "list";
 
 /* GET */
 router.get("/", (req, res) => {
-	try {
-		const { date_created, board_id, position } = req.query;
+	const table = db.table(tableName);
+	const { date_created, board_id, position } = req.query;
 
-		let sql = `SELECT * FROM ${tableName}`;
+	const whereCondition = {};
+	if (date_created) whereCondition.date_created = date_created;
+	if (board_id) whereCondition.board_id = board_id;
+	if (position) whereCondition.position = position;
 
-		if (Object.keys(req.query).length > 0) {
-			let conditions = [];
-			if (date_created) conditions.push(`date_created=${date_created}`);
-			if (board_id) conditions.push(`board_id=${board_id}`);
-			if (position) conditions.push(`position=${position}`);
-			sql += ` WHERE ${conditions.join(" AND ")}`;
+	table.selectAll(whereCondition, (err, data) => {
+		if (err) {
+			res.status(1500).json({ error: err.message });
+		} else {
+			res.status(200).json(data);
 		}
-
-		db.execSql(sql, (e, data) => {
-			if (e) res.status(500).json({ error: e.message });
-			else res.status(200).json(data);
-		});
-	} catch (e) {
-		res.status(500).json({ error: e });
-	}
+	});
 });
 
 router.get("/:id", (req, res) => {
@@ -61,10 +56,30 @@ router.post("/", (req, res) => {
 			(e) => {
 				if (e)
 					res.status(500).json({ error: "failed to create a list" });
-				else
-					res.status(201).json({
-						message: "list created successfully",
+				else {
+					//get the item's id
+					const conditions = {
+						title: title,
+						date_created: date_created,
+						position: position,
+						board_id: board_id,
+					};
+
+					table.selectAll(conditions, (err, data) => {
+						if (err) {
+							res.status(500).json({
+								error: "Failed to retrieve the created list",
+							});
+						} else {
+							const responseData = {
+								message: "List created successfully",
+								data: data,
+							};
+
+							res.status(201).json(responseData);
+						}
 					});
+				}
 			}
 		);
 	} catch (e) {

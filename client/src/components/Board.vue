@@ -38,7 +38,21 @@
 				...pushData,
 				board_id: store.state.board_id, // server thing only
 			});
-			console.log(response);
+
+			// update the new item locally with it's id from the database
+			const newData = response.data.data[0];
+
+			if (newData) {
+				const index = board.value.findIndex(
+					(item) => item.date_created === pushData.date_created
+				);
+				if (index !== -1) {
+					board.value[index] = {
+						...pushData,
+						...newData,
+					};
+				}
+			}
 		} catch (e) {
 			console.error(e);
 		}
