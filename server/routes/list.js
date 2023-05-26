@@ -134,20 +134,41 @@ router.patch("/:id", async (req, res) => {
 			);
 		});
 
-		if (!list) res.status(404).json({ message: "list doesn't exist" });
-		else
-			table.updateRowNew(
-				{
-					title: title || list.title,
-					position: position || list.position,
-					// board_id shouldn't be updated. Same goes for creation date, doesn't make sense
-				},
-				{ id: tableId },
-				(e) => {
-					if (e) res.status(500).json({ error: e });
-					else res.status(204).end();
-				}
-			);
+		if (!list) {
+			res.status(404).json({ message: "list doesn't exist" }).end();
+			return;
+		}
+
+		console.log("");
+		console.log("oldpos", list.position);
+		console.log("newpos", position);
+		// moving items around if required
+		if (position !== undefined && position !== list.position) {
+			let sql = `UPDATE ${table.name} `;
+			if (list.position < position)
+				sql += `SET position=position-1 WHERE board_id=${list.board_id} AND (position BETWEEN ${list.position} AND ${position})`;
+			else if (list.position > position)
+				sql += `SET position=position+1 WHERE board_id=${list.board_id} AND (position BETWEEN ${position} AND ${list.position})`;
+
+			console.log(sql);
+			db.execSql(sql, (e) => {
+				if (e) res.status(500).json({ error: e });
+			});
+		}
+
+		// updating the item
+		table.updateRowNew(
+			{
+				title: title || list.title,
+				position: position !== undefined ? position : list.position,
+				// board_id shouldn't be updated. Same goes for creation date, doesn't make sense
+			},
+			{ id: tableId },
+			(e) => {
+				if (e) res.status(500).json({ error: e });
+				else res.status(204).end();
+			}
+		);
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}

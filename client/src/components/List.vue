@@ -1,5 +1,5 @@
 <script setup>
-	import { ref, inject, watch } from "vue";
+	import { ref, inject, watch, toRaw } from "vue";
 	import * as utils from "../utils";
 	import api from "../api";
 
@@ -139,12 +139,14 @@
 		}
 	}
 
-	function listDrop(item, e) {
+	async function listDrop(item, e) {
 		/* this line prevents this function from executing
 		when dropping a card onto a card */
 		if (!e.target.classList.contains("list")) return;
 
-		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+		const droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+		const oldPosition = toRaw(droppedItem).position;
+		const newPosition = toRaw(item).position;
 
 		// if card dropped
 		if (e.dataTransfer.getData("isList") === "false") {
@@ -162,11 +164,26 @@
 				droppedItem,
 				0
 			);
+
 			return;
 		}
 
 		// if list dropped
-		utils.moveInArray(props.boardData, droppedItem.position, item.position);
+		// local
+		utils.moveInArray(
+			props.boardData,
+			toRaw(droppedItem).position,
+			toRaw(item).position
+		);
+
+		// DOESN'T WORK WHEN MOVING FROM HIGHER TO LOWER POSITION
+		console.log("item pos", newPosition);
+		console.log("droppedItem pos", oldPosition);
+		// server
+		const response = await api.patchList(toRaw(droppedItem).id, {
+			position: newPosition,
+		});
+		console.log(response);
 	}
 
 	// handles focusing when editing lists
@@ -222,7 +239,8 @@
 				@keyup.enter="editList"
 				@keyup.esc="editList"
 			/>
-
+			{{ props.listData.id }} |
+			{{ props.listData.position }}
 			<span @click="deleteList">🗑️</span>
 		</div>
 

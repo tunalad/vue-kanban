@@ -6,10 +6,7 @@
 	import Overlay from "./Overlay.vue";
 
 	const store = inject("store");
-	//const board = ref(store.state.board);
 	const board = ref([]);
-
-	board.value.sort((a, b) => a.position - b.position);
 
 	const addingList = ref(false);
 	const newList = ref("");
@@ -55,6 +52,7 @@
 		() => store.state.board,
 		(newBoard) => {
 			board.value = newBoard;
+			board.value.sort((a, b) => a.position - b.position);
 		},
 		{ immediate: true }
 	);
