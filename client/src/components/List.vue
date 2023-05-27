@@ -47,21 +47,56 @@
 		}
 	}
 
-	function addCard(e, list) {
+	async function addCard(e, list) {
 		if (e.key === "Escape") {
 			addingCard.value = false;
 			newCard.value = "";
 			return;
 		}
 
-		if (newCard.value.trim().length !== 0 || !newCard)
-			list.tasks.push({
-				title: newCard.value,
-				description: "",
-				labels: [],
-				position: list.tasks.length,
-				dateCreated: Date.now(),
+		const pushData = {
+			title: newCard.value,
+			description: "",
+			position: list.cards.length,
+			date_created: Date.now(),
+		};
+
+		if (newCard.value.trim().length !== 0 || !newCard) {
+			// local
+			list.cards.push({
+				...pushData,
+				labels: [], // local thing only
 			});
+
+			// server
+			try {
+				const response = await api.postCard({
+					...pushData,
+					list_id: props.listData.id, // server thing only
+				});
+
+				// update the new item locally with it's id from the database
+				const newData = response.data.data[0];
+
+				if (newData) {
+					const index = props.listData.cards.findIndex(
+						(item) => item.date_created === pushData.date_created
+					);
+					if (index !== -1) {
+						props.listData.cards[index] = {
+							...pushData,
+							...newData,
+						};
+					}
+				}
+				//console.log(toRaw(board.value));
+				//console.log(props.listData.cards[0]);
+				//console.log(newData);
+			} catch (e) {
+				console.error(e);
+			}
+		}
+
 		addingCard.value = false;
 		newCard.value = "";
 	}

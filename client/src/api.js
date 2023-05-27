@@ -35,6 +35,26 @@ export default {
 		);
 	},
 
+	postCard(data) {
+		const { title, description, date_created, position, list_id } = data;
+
+		return apiClient.post(
+			"/card",
+			{
+				title,
+				description,
+				date_created,
+				position,
+				list_id,
+			},
+			{
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+	},
+
 	patchList(id, data) {
 		return apiClient.patch(`/list/${id}`, data, {
 			headers: {

@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
 
 		table.selectAll(whereCondition, (err, data) => {
 			if (err) {
-				res.status(1500).json({ error: err.message });
+				res.status(500).json({ error: err.message });
 			} else {
 				res.status(200).json(data);
 			}
@@ -60,10 +60,30 @@ router.post("/", (req, res) => {
 			(e) => {
 				if (e)
 					res.status(500).json({ error: "failed to create a card" });
-				else
-					res.status(201).json({
-						message: "card created successfully",
+				else {
+					const conditions = {
+						title: title,
+						description: description,
+						date_created: date_created,
+						position: position,
+						list_id: list_id,
+					};
+
+					table.selectAll(conditions, (err, data) => {
+						if (err) {
+							res.status(500).json({
+								error: "failed to retrieve the created card",
+							});
+						} else {
+							const responseData = {
+								message: "card created successfully",
+								data: data,
+							};
+
+							res.status(201).json(responseData);
+						}
 					});
+				}
 			}
 		);
 	} catch (e) {
