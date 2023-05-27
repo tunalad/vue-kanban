@@ -163,7 +163,7 @@ router.patch("/:id", async (req, res) => {
 		}
 
 		// moving to a different list
-		if (list_id !== card.list_id) {
+		if (list_id !== undefined && list_id !== card.list_id) {
 			// delete from old one
 			table.deleteRow({ id: tableId }, (e) => {
 				if (e) {

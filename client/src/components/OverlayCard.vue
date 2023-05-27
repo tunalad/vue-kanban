@@ -16,16 +16,20 @@
 	const inputField = ref(null);
 	const inputValue = ref("");
 
-	function editTitle(e) {
+	async function editTitle(e) {
 		if (inputValue.value.trim().length > 0 && e.key !== "Escape")
 			props.taskData.title = inputValue.value;
 
 		inputValue.value = props.taskData.title;
 		editing.value = false;
 		editingElement.value = null;
+
+		const response = await api.patchCard(props.taskData.id, {
+			title: props.taskData.title,
+		});
 	}
 
-	function editDescription(e) {
+	async function editDescription(e) {
 		if (e.key !== "Escape") {
 			const inputValueTrimmed = inputValue.value.trim();
 			if (inputValueTrimmed !== props.taskData.description) {
@@ -36,6 +40,10 @@
 		inputValue.value = props.taskData.description;
 		editing.value = false;
 		editingElement.value = null;
+
+		const response = await api.patchCard(props.taskData.id, {
+			description: props.taskData.description,
+		});
 	}
 
 	async function deleteCard() {
