@@ -25,36 +25,35 @@
 			position: board.value.length,
 		};
 
-		// localStorage update
-		if (newList.value.trim().length !== 0 || !newList)
-			board.value.push({
-				...pushData,
-				cards: [], // local thing only
-			});
+		if (newList.value.trim().length !== 0 || !newList) {
+			// localStorage update
+			board.value.push(pushData);
 
-		// server update
-		try {
-			const response = await api.postList({
-				...pushData,
-				board_id: store.state.board_id, // server thing only
-			});
+			// server update
+			try {
+				const response = await api.postList({
+					...pushData,
+					board_id: store.state.board_id, // server thing only
+				});
 
-			// update the new item locally with it's id from the database
-			const newData = response.data.data[0];
+				// update the new item locally with it's id from the database
+				const newData = response.data.data[0];
 
-			if (newData) {
-				const index = board.value.findIndex(
-					(item) => item.date_created === pushData.date_created
-				);
-				if (index !== -1) {
-					board.value[index] = {
-						...pushData,
-						...newData,
-					};
+				if (newData) {
+					const index = board.value.findIndex(
+						(item) => item.date_created === pushData.date_created
+					);
+					if (index !== -1) {
+						board.value[index] = {
+							...pushData,
+							...newData,
+							cards: [],
+						};
+					}
 				}
+			} catch (e) {
+				console.error(e);
 			}
-		} catch (e) {
-			console.error(e);
 		}
 
 		addingList.value = false;

@@ -99,8 +99,6 @@
 		</div>
 		<p>
 			{{ props.taskData.title }}
-			{{ props.taskData.id }} |
-			{{ props.taskData.position }}
 		</p>
 		<div class="icons">
 			<p v-if="props.taskData.description">🗒️</p>

@@ -63,10 +63,7 @@
 
 		if (newCard.value.trim().length !== 0 || !newCard) {
 			// local
-			list.cards.push({
-				...pushData,
-				labels: [], // local thing only
-			});
+			list.cards.push(pushData);
 
 			// server
 			try {
@@ -86,6 +83,7 @@
 						props.listData.cards[index] = {
 							...pushData,
 							...newData,
+							labels: [],
 						};
 					}
 				}
