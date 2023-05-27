@@ -7,20 +7,19 @@ const tableName = "card_label";
 /* GET */
 router.get("/", (req, res) => {
 	try {
+		const table = db.table(tableName);
 		const { card_id, label_id } = req.query;
 
-		let sql = `SELECT * FROM ${tableName}`;
+		const whereCondition = {};
+		if (card_id) whereCondition.card_id = card_id;
+		if (label_id) whereCondition.label_id = label_id;
 
-		if (Object.keys(req.query).length > 0) {
-			let conditions = [];
-			if (card_id) conditions.push(`card_id=${card_id}`);
-			if (label_id) conditions.push(`label_id=${label_id}`);
-			sql += ` WHERE ${conditions.join(" AND ")}`;
-		}
-
-		db.execSql(sql, (e, data) => {
-			if (e) res.status(500).json({ error: e.message });
-			else res.status(200).json(data);
+		table.selectAll(whereCondition, (err, data) => {
+			if (err) {
+				res.status(1500).json({ error: err.message });
+			} else {
+				res.status(200).json(data);
+			}
 		});
 	} catch (e) {
 		res.status(500).json({ error: e });
@@ -29,15 +28,13 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
 	try {
+		const table = db.table(tableName);
 		const itemId = req.params.id;
 
-		db.execSql(
-			`SELECT * FROM ${tableName} where id=${itemId}`,
-			(e, data) => {
-				if (e) res.status(500).json({ error: e.message });
-				else res.status(200).json(data);
-			}
-		);
+		table.selectAll({ id: itemId }, (e, data) => {
+			if (e) res.status(500).json({ error: err.message });
+			else res.status(200).json(data);
+		});
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}

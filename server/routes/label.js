@@ -7,21 +7,20 @@ const tableName = "label";
 /* GET */
 router.get("/", (req, res) => {
 	try {
-		const { date_created, board_id, list } = req.query;
+		const table = db.table(tableName);
+		const { date_created, board_id, color } = req.query;
 
-		let sql = `SELECT * FROM ${tableName}`;
+		const whereCondition = {};
+		if (date_created) whereCondition.date_created = date_created;
+		if (board_id) whereCondition.board_id = board_id;
+		if (color) whereCondition.color = color;
 
-		if (Object.keys(req.query).length > 0) {
-			let conditions = [];
-			if (date_created) conditions.push(`date_created=${date_created}`);
-			if (board_id) conditions.push(`board_id=${board_id}`);
-			if (list) conditions.push(`list=${list}`);
-			sql += ` WHERE ${conditions.join(" AND ")}`;
-		}
-
-		db.execSql(sql, (e, data) => {
-			if (e) res.status(500).json({ error: e.message });
-			else res.status(200).json(data);
+		table.selectAll(whereCondition, (err, data) => {
+			if (err) {
+				res.status(1500).json({ error: err.message });
+			} else {
+				res.status(200).json(data);
+			}
 		});
 	} catch (e) {
 		res.status(500).json({ error: e });
@@ -30,15 +29,13 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
 	try {
+		const table = db.table(tableName);
 		const itemId = req.params.id;
 
-		db.execSql(
-			`SELECT * FROM ${tableName} where id=${itemId}`,
-			(e, data) => {
-				if (e) res.status(500).json({ error: e.message });
-				else res.status(200).json(data);
-			}
-		);
+		table.selectAll({ id: itemId }, (e, data) => {
+			if (e) res.status(500).json({ error: err.message });
+			else res.status(200).json(data);
+		});
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}

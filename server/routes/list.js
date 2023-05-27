@@ -25,15 +25,13 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
 	try {
+		const table = db.table(tableName);
 		const itemId = req.params.id;
 
-		db.execSql(
-			`SELECT * FROM ${tableName} where id=${itemId}`,
-			(e, data) => {
-				if (e) res.status(500).json({ error: e.message });
-				else res.status(200).json(data);
-			}
-		);
+		table.selectAll({ id: itemId }, (e, data) => {
+			if (e) res.status(500).json({ error: err.message });
+			else res.status(200).json(data);
+		});
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}
