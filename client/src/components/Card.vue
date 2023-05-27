@@ -1,6 +1,7 @@
 <script setup>
-	import { ref, inject } from "vue";
+	import { ref, inject, toRaw } from "vue";
 	import * as utils from "../utils";
+	import api from "../api";
 
 	const store = inject("store");
 	const board = ref(store.state.board);
@@ -34,9 +35,11 @@
 		e.dataTransfer.setData("isList", false);
 	}
 
-	function cardDrop(item, e) {
+	async function cardDrop(item, e) {
 		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
 		let fromList = JSON.parse(e.dataTransfer.getData("fromList"));
+		const newPosition = toRaw(item).position;
+		const newList = toRaw(item).list_id;
 
 		// if list dropped, do nothing
 		if (e.dataTransfer.getData("isList") === "true") return;
@@ -45,25 +48,37 @@
 		if (fromList.title !== props.listData.title) {
 			// pops item from old list
 			utils.removeObject(
-				board.value[fromList.position].tasks,
+				board.value[fromList.position].cards,
 				droppedItem.position
 			);
 
 			// pushes to the new list
 			utils.addObject(
-				board.value[props.listData.position].tasks,
+				board.value[props.listData.position].cards,
 				droppedItem,
 				item.position + 1
 			);
+
+			// same actions on the server
+			const response = await api.patchCard(toRaw(droppedItem).id, {
+				position: newPosition + 1,
+				list_id: newList,
+			});
 			return;
 		}
 
 		// if from the same list
+		// client
 		utils.moveInArray(
-			props.listData.tasks,
+			props.listData.cards,
 			droppedItem.position,
 			item.position
 		);
+
+		// server
+		const response = await api.patchCard(toRaw(droppedItem).id, {
+			position: newPosition,
+		});
 	}
 </script>
 
@@ -99,6 +114,8 @@
 		</div>
 		<p>
 			{{ props.taskData.title }}
+			{{ props.taskData.id }} |
+			{{ props.taskData.position }}
 		</p>
 		<div class="icons">
 			<p v-if="props.taskData.description">🗒️</p>

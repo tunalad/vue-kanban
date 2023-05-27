@@ -63,6 +63,14 @@ export default {
 		});
 	},
 
+	patchCard(id, data) {
+		return apiClient.patch(`/card/${id}`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
+
 	deleteList(id) {
 		return apiClient.delete(`/list/${id}`, {
 			headers: {

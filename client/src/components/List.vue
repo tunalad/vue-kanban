@@ -87,9 +87,6 @@
 						};
 					}
 				}
-				//console.log(toRaw(board.value));
-				//console.log(props.listData.cards[0]);
-				//console.log(newData);
 			} catch (e) {
 				console.error(e);
 			}
@@ -176,8 +173,7 @@
 		if (!e.target.classList.contains("list")) return;
 
 		const droppedItem = JSON.parse(e.dataTransfer.getData("text"));
-		const oldPosition = toRaw(droppedItem).position;
-		const newPosition = toRaw(item).position;
+		const newList = toRaw(item).id;
 
 		// if card dropped
 		if (e.dataTransfer.getData("isList") === "false") {
@@ -185,17 +181,22 @@
 
 			// pops item from old list
 			utils.removeObject(
-				board.value[fromList.position].tasks,
+				board.value[fromList.position].cards,
 				droppedItem.position
 			);
 
 			// pushes to the new list
 			utils.addObject(
-				board.value[props.listData.position].tasks,
+				board.value[props.listData.position].cards,
 				droppedItem,
 				0
 			);
 
+			// same actions on the server
+			const response = await api.patchCard(toRaw(droppedItem).id, {
+				position: 0,
+				list_id: newList,
+			});
 			return;
 		}
 

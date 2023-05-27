@@ -123,24 +123,92 @@ router.patch("/:id", async (req, res) => {
 			);
 		});
 
-		if (!card) res.status(404).json({ message: "card doesn't exist" });
-		else
-			table.updateRowNew(
-				{
-					title: title || card.title,
-					description: description || card.description,
-					position: position || card.position,
+		if (!card) {
+			res.status(404).json({ message: "card doesn't exist" }).end();
+			return;
+		}
 
-					list_id: list_id || card.list_id,
-					// date creation shouldn't be updated.
+		// moving to a different list
+		if (list_id !== card.list_id) {
+			// delete from old one
+			table.deleteRow({ id: tableId }, (e) => {
+				if (e) {
+					res.status(500)
+						.json({ error: "failed to delete a card" })
+						.end();
+					return;
+				}
+			});
+
+			// append to the new list
+			table.insertRow(
+				{
+					id: card.id,
+					title: card.title,
+					description: card.description,
+					date_created: card.date_created,
+					position: position,
+
+					list_id: list_id,
 				},
-				{ id: tableId },
 				(e) => {
 					if (e) {
-						res.status(500).json({ error: e });
-					} else res.status(204).end();
+						res.status(500)
+							.json({
+								error: "failed to create a card",
+							})
+							.end();
+						return;
+					} else {
+						res.status(201)
+							.json({
+								message: "card moved successfully",
+								data: {
+									id: card.id,
+									title: card.title,
+									description: card.description,
+									date_created: card.date_created,
+									position: position,
+
+									list_id: list_id,
+								},
+							})
+							.end();
+						return;
+					}
 				}
 			);
+		}
+
+		// moving items around if required
+		if (position !== undefined && position !== card.position) {
+			let sql = `UPDATE ${table.name} `;
+			if (card.position < position)
+				sql += `SET position=position-1 WHERE list_id=${card.list_id} AND (position BETWEEN ${card.position} AND ${position})`;
+			else if (card.position > position)
+				sql += `SET position=position+1 WHERE list_id=${card.list_id} AND (position BETWEEN ${position} AND ${card.position})`;
+
+			db.execSql(sql, (e) => {
+				if (e) res.status(500).json({ error: e });
+			});
+		}
+
+		table.updateRowNew(
+			{
+				title: title || card.title,
+				description: description || card.description,
+				position: position || card.position,
+
+				list_id: list_id || card.list_id,
+				// date creation shouldn't be updated.
+			},
+			{ id: tableId },
+			(e) => {
+				if (e) {
+					res.status(500).json({ error: e });
+				} else res.status(204).end();
+			}
+		);
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}

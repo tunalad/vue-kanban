@@ -152,9 +152,6 @@ router.patch("/:id", async (req, res) => {
 			return;
 		}
 
-		console.log("");
-		console.log("oldpos", list.position);
-		console.log("newpos", position);
 		// moving items around if required
 		if (position !== undefined && position !== list.position) {
 			let sql = `UPDATE ${table.name} `;
