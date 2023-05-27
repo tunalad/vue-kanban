@@ -78,4 +78,12 @@ export default {
 			},
 		});
 	},
+
+	deleteCard(id) {
+		return apiClient.delete(`/card/${id}`, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
 };

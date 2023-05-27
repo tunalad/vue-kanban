@@ -1,6 +1,7 @@
 <script setup>
 	import { ref, inject, watch } from "vue";
 	import * as utils from "../utils";
+	import api from "../api";
 
 	const store = inject("store");
 
@@ -37,13 +38,16 @@
 		editingElement.value = null;
 	}
 
-	function deleteCard() {
-		utils.removeObject(props.listData.tasks, props.taskData.position);
+	async function deleteCard() {
+		utils.removeObject(props.listData.cards, props.taskData.position);
 
 		inputValue.value = "";
 		editing.value = false;
 		editingElement.value = null;
+
 		emit("close");
+		// server
+		const response = await api.deleteList(props.listData.id);
 	}
 
 	function handleLabel(e) {
