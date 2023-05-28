@@ -90,6 +90,14 @@ export default {
 		});
 	},
 
+	patchLabel(id, data) {
+		return apiClient.patch(`/label/${id}`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
+
 	deleteList(id) {
 		return apiClient.delete(`/list/${id}`, {
 			headers: {

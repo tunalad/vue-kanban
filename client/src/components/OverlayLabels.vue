@@ -56,11 +56,7 @@
 		}
 	}
 
-	function editLabel(oldData, newData) {
-		//oldData.title = newData.title;
-		//oldData.color = newData.color;
-		//console.log(store.state.editingData.taskData.labels[oldData.id]);
-
+	async function editLabel(newData) {
 		const board = ref(store.state.board);
 
 		// updates card colors
@@ -81,6 +77,12 @@
 		const label = store.state.boardLabels.find((i) => i.id === newData.id);
 		label.title = newData.title;
 		label.color = newData.color;
+
+		// server update
+		await api.patchLabel(label.id, {
+			color: newData.color,
+			title: newData.title,
+		});
 
 		editing.value = false;
 		editingLabel.value = null;
@@ -173,9 +175,7 @@
 				"
 			/>
 			<br />
-			<button @click="editLabel(editingLabel, editingLabelNew)">
-				Save
-			</button>
+			<button @click="editLabel(editingLabelNew)">Save</button>
 			<button
 				@click="
 					editing = false;
