@@ -55,16 +55,17 @@
 
 		emit("close");
 		// server
-		const response = await api.deleteList(props.listData.id);
+		const response = await api.deleteCard(props.taskData.id);
 	}
 
-	function handleLabel(e) {
+	async function handleLabel(e) {
 		const index = parseInt(e.target.value);
 		const label = store.state.boardLabels.find((item) => item.id === index);
 
 		const labelIndex = props.taskData.labels.findIndex(
 			(item) => item.id === index
 		);
+
 		if (labelIndex !== -1) {
 			// If the label already exists, remove it from the array
 			props.taskData.labels.splice(labelIndex, 1);
@@ -75,6 +76,12 @@
 
 		props.taskData.labels.sort((a, b) => a.id - b.id);
 		labelSelector.value.selectedIndex = 0;
+
+		// server update
+		await api.postCardLabel({
+			card_id: props.taskData.id,
+			label_id: label.id,
+		});
 	}
 
 	// handles focusing when editing

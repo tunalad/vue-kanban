@@ -110,6 +110,8 @@
 
 		// server
 		await api.deleteLabel(label.id);
+
+		console.log("epic label delete");
 	}
 </script>
 

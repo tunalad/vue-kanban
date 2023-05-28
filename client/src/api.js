@@ -74,6 +74,23 @@ export default {
 		);
 	},
 
+	postCardLabel(data) {
+		const { card_id, label_id } = data;
+
+		return apiClient.post(
+			"/card_label",
+			{
+				card_id,
+				label_id,
+			},
+			{
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+	},
+
 	patchList(id, data) {
 		return apiClient.patch(`/list/${id}`, data, {
 			headers: {
