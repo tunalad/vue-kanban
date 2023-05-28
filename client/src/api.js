@@ -55,6 +55,25 @@ export default {
 		);
 	},
 
+	postLabel(data) {
+		const { title, date_created, color, board_id } = data;
+
+		return apiClient.post(
+			"/label",
+			{
+				title,
+				date_created,
+				color,
+				board_id,
+			},
+			{
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+	},
+
 	patchList(id, data) {
 		return apiClient.patch(`/list/${id}`, data, {
 			headers: {

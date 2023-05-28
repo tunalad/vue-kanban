@@ -1,5 +1,6 @@
 <script setup>
-	import { ref, inject } from "vue";
+	import { ref, inject, toRaw } from "vue";
+	import api from "../api";
 
 	const emit = defineEmits(["close"]);
 
@@ -10,25 +11,33 @@
 		id: null,
 		title: "",
 		color: "#000",
+		date_created: Date.now(),
 	});
 
 	const editing = ref(false);
 	const editingLabel = ref(null);
 	const editingLabelNew = ref(null);
 
-	function addLabel(action = "save") {
+	async function addLabel(action = "save") {
 		if (action === "cancel") {
 			adding.value = false;
 			addingObject.value = {
 				id: null,
 				title: "",
 				color: "#000",
+				date_created: null,
 			};
 		}
 
 		if (action === "save") {
 			addingObject.value.id = new Date().getTime();
 			store.state.boardLabels.push(addingObject.value);
+
+			// server
+			await api.postLabel({
+				...toRaw(addingObject.value),
+				board_id: store.state.board_id,
+			});
 		}
 	}
 
