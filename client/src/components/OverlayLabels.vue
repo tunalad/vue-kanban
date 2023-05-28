@@ -30,6 +30,7 @@
 		}
 
 		if (action === "save") {
+			// client
 			addingObject.value.id = new Date().getTime();
 
 			store.state.boardLabels.push(addingObject.value);
@@ -43,7 +44,7 @@
 
 			const newData = response.data.data[0];
 
-			// update the new item locally with it's id from the database
+			// update local id
 			if (newData) {
 				const index = toRaw(store.state.boardLabels).findIndex(
 					(item) =>
@@ -61,6 +62,7 @@
 	async function editLabel(newData) {
 		const board = ref(store.state.board);
 
+		// client
 		// updates card colors
 		for (let lists in board.value) {
 			let tasks = board.value[lists].tasks;
@@ -80,20 +82,21 @@
 		label.title = newData.title;
 		label.color = newData.color;
 
-		// server update
+		editing.value = false;
+		editingLabel.value = null;
+		editingLabelNew.value = null;
+
+		// server
 		await api.patchLabel(label.id, {
 			color: newData.color,
 			title: newData.title,
 		});
-
-		editing.value = false;
-		editingLabel.value = null;
-		editingLabelNew.value = null;
 	}
 
 	async function deleteLabel(label) {
 		const board = ref(store.state.board);
 
+		// client
 		for (let lists in board.value) {
 			let cards = board.value[lists].cards;
 			for (let card in cards) {

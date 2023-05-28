@@ -24,7 +24,7 @@
 		editing.value = false;
 		editingElement.value = null;
 
-		const response = await api.patchCard(props.taskData.id, {
+		await api.patchCard(props.taskData.id, {
 			title: props.taskData.title,
 		});
 	}
@@ -41,7 +41,7 @@
 		editing.value = false;
 		editingElement.value = null;
 
-		const response = await api.patchCard(props.taskData.id, {
+		await api.patchCard(props.taskData.id, {
 			description: props.taskData.description,
 		});
 	}
@@ -55,7 +55,7 @@
 
 		emit("close");
 		// server
-		const response = await api.deleteCard(props.taskData.id);
+		await api.deleteCard(props.taskData.id);
 	}
 
 	async function handleLabel(e) {

@@ -46,21 +46,21 @@
 
 		// if not from the same list
 		if (fromList.title !== props.listData.title) {
-			// pops item from old list
 			utils.removeObject(
+				// pops item from old list
 				board.value[fromList.position].cards,
 				droppedItem.position
 			);
 
-			// pushes to the new list
 			utils.addObject(
+				// pushes to the new list
 				board.value[props.listData.position].cards,
 				droppedItem,
 				item.position + 1
 			);
 
-			// same actions on the server
-			const response = await api.patchCard(toRaw(droppedItem).id, {
+			// server
+			await api.patchCard(toRaw(droppedItem).id, {
 				position: newPosition + 1,
 				list_id: newList,
 			});
@@ -76,7 +76,7 @@
 		);
 
 		// server
-		const response = await api.patchCard(toRaw(droppedItem).id, {
+		await api.patchCard(toRaw(droppedItem).id, {
 			position: newPosition,
 		});
 	}
@@ -114,8 +114,6 @@
 		</div>
 		<p>
 			{{ props.taskData.title }}
-			{{ props.taskData.id }} |
-			{{ props.taskData.position }}
 		</p>
 		<div class="icons">
 			<p v-if="props.taskData.description">🗒️</p>

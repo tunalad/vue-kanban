@@ -7,7 +7,6 @@
 	const board = ref(store.state.board);
 
 	const props = defineProps(["listData", "boardData"]);
-	//props.listData.cards.sort((a, b) => a.position - b.position);
 
 	const editing = ref(false);
 	const inputField = ref(null);
@@ -23,7 +22,7 @@
 
 			// server
 			try {
-				const response = await api.patchList(props.listData.id, {
+				await api.patchList(props.listData.id, {
 					title: inputValue.value,
 				});
 			} catch (e) {
@@ -41,7 +40,7 @@
 			utils.removeObject(board.value, props.listData.position);
 
 			// server
-			const response = await api.deleteList(props.listData.id);
+			await api.deleteList(props.listData.id);
 		} catch (e) {
 			console.error(e);
 		}
@@ -64,6 +63,9 @@
 		if (newCard.value.trim().length !== 0 || !newCard) {
 			// local
 			list.cards.push(pushData);
+
+			addingCard.value = false;
+			newCard.value = "";
 
 			// server
 			try {
@@ -91,9 +93,6 @@
 				console.error(e);
 			}
 		}
-
-		addingCard.value = false;
-		newCard.value = "";
 	}
 
 	function listStyle(e, style) {
@@ -179,14 +178,14 @@
 		if (e.dataTransfer.getData("isList") === "false") {
 			let fromList = JSON.parse(e.dataTransfer.getData("fromList"));
 
-			// pops item from old list
 			utils.removeObject(
+				// pops item from old list
 				board.value[fromList.position].cards,
 				droppedItem.position
 			);
 
-			// pushes to the new list
 			utils.addObject(
+				// pushes to the new list
 				board.value[props.listData.position].cards,
 				droppedItem,
 				0
@@ -209,7 +208,7 @@
 		);
 
 		// server
-		const response = await api.patchList(toRaw(droppedItem).id, {
+		await api.patchList(toRaw(droppedItem).id, {
 			position: newPosition,
 		});
 	}

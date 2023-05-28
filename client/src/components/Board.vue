@@ -29,6 +29,8 @@
 			// localStorage update
 			board.value.push(pushData);
 
+			addingList.value = false;
+			newList.value = "";
 			// server update
 			try {
 				const response = await api.postList({
@@ -55,9 +57,6 @@
 				console.error(e);
 			}
 		}
-
-		addingList.value = false;
-		newList.value = "";
 	}
 
 	// watches the store.state.board changes
