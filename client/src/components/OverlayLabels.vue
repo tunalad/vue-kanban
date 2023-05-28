@@ -17,6 +17,8 @@
 	const editingLabel = ref(null);
 	const editingLabelNew = ref(null);
 
+	console.log(store.state.board[0].cards[0].labels);
+
 	async function addLabel(action = "save") {
 		if (action === "cancel") {
 			adding.value = false;
@@ -93,16 +95,18 @@
 		const board = ref(store.state.board);
 
 		for (let lists in board.value) {
-			let tasks = board.value[lists].tasks;
-			for (let task in tasks) {
-				let labels = tasks[task].labels;
+			let cards = board.value[lists].cards;
+			for (let card in cards) {
+				let labels = cards[card].labels;
 				for (let l in labels) {
-					if (label.id === labels[l].id) labels.splice(l, 1);
+					if (label.id === labels[l].id) {
+						labels.splice(l, 1);
+					}
 				}
 			}
 		}
 
-		// removes label on client
+		// removes label in the list
 		store.state.boardLabels.splice(
 			store.state.boardLabels.findIndex((item) => item.id === label.id),
 			1
@@ -110,8 +114,6 @@
 
 		// server
 		await api.deleteLabel(label.id);
-
-		console.log("epic label delete");
 	}
 </script>
 
