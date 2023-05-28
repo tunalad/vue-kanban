@@ -105,4 +105,12 @@ export default {
 			},
 		});
 	},
+
+	deleteLabel(id) {
+		return apiClient.delete(`/label/${id}`, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
 };

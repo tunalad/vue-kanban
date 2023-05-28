@@ -11,7 +11,6 @@
 		id: null,
 		title: "",
 		color: "#000",
-		date_created: Date.now(),
 	});
 
 	const editing = ref(false);
@@ -25,19 +24,35 @@
 				id: null,
 				title: "",
 				color: "#000",
-				date_created: null,
 			};
 		}
 
 		if (action === "save") {
 			addingObject.value.id = new Date().getTime();
+
 			store.state.boardLabels.push(addingObject.value);
 
 			// server
-			await api.postLabel({
+			const response = await api.postLabel({
 				...toRaw(addingObject.value),
+				date_created: Date.now(),
 				board_id: store.state.board_id,
 			});
+
+			const newData = response.data.data[0];
+
+			// update the new item locally with it's id from the database
+			if (newData) {
+				const index = toRaw(store.state.boardLabels).findIndex(
+					(item) =>
+						item.date_created === addingObject.value.date_created
+				);
+				if (index !== -1) {
+					store.state.boardLabels[index] = {
+						...newData,
+					};
+				}
+			}
 		}
 	}
 
@@ -72,7 +87,7 @@
 		editingLabelNew.value = null;
 	}
 
-	function deleteLabel(label) {
+	async function deleteLabel(label) {
 		const board = ref(store.state.board);
 
 		for (let lists in board.value) {
@@ -85,11 +100,14 @@
 			}
 		}
 
-		// removes label globally
+		// removes label on client
 		store.state.boardLabels.splice(
 			store.state.boardLabels.findIndex((item) => item.id === label.id),
 			1
 		);
+
+		// server
+		await api.deleteLabel(label.id);
 	}
 </script>
 

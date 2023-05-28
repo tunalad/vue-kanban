@@ -58,10 +58,29 @@ router.post("/", (req, res) => {
 			(e) => {
 				if (e)
 					res.status(500).json({ error: "failed to create a label" });
-				else
-					res.status(201).json({
-						message: "label created successfully",
+				else {
+					const conditions = {
+						title: title,
+						date_created: date_created,
+						color: color,
+						board_id: board_id,
+					};
+
+					table.selectAll(conditions, (err, data) => {
+						if (err) {
+							res.status(500).json({
+								error: "failed to retrieve the created label",
+							});
+						} else {
+							const responseData = {
+								message: "label created successfully",
+								data: data,
+							};
+
+							res.status(201).json(responseData);
+						}
 					});
+				}
 			}
 		);
 	} catch (e) {
