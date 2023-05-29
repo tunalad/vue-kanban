@@ -1,5 +1,6 @@
 <script setup>
-	import { ref, inject, watch } from "vue";
+	import { ref, inject, watch, onMounted } from "vue";
+	import { useRoute } from "vue-router";
 	import api from "../api";
 	import Card from "./Card.vue";
 	import List from "./List.vue";
@@ -76,6 +77,10 @@
 				inputField.value.focus();
 			});
 		}
+	});
+
+	onMounted(() => {
+		store.state.board_id = useRoute().params.id;
 	});
 </script>
 

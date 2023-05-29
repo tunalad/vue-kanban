@@ -1,5 +1,6 @@
 import { reactive, watchEffect } from "vue";
 import apiClient from "./api";
+import router from "./router";
 
 async function getBoard(id) {
 	try {
@@ -19,24 +20,26 @@ const state = reactive({
 	editingData: {},
 });
 
-(async () => {
-	const boardData = await getBoard(2);
+watchEffect(async () => {
+	if (state.board_id) {
+		const boardData = await getBoard(state.board_id);
 
-	if (boardData) {
-		const { lists, labels } = boardData;
+		if (boardData) {
+			const { lists, labels } = boardData;
 
-		localStorage.setItem("board", JSON.stringify(lists));
-		localStorage.setItem("boardLabels", JSON.stringify(labels));
+			localStorage.setItem("board", JSON.stringify(lists));
+			localStorage.setItem("boardLabels", JSON.stringify(labels));
 
-		state.board = JSON.parse(localStorage.getItem("board"));
-		state.boardLabels = JSON.parse(localStorage.getItem("boardLabels"));
-		state.board_id = boardData.id;
+			state.board = JSON.parse(localStorage.getItem("board"));
+			state.boardLabels = JSON.parse(localStorage.getItem("boardLabels"));
+			state.board_id = boardData.id;
+		}
+
+		localStorage.setItem("board", JSON.stringify(state.board));
+		localStorage.setItem("boardLabels", JSON.stringify(state.boardLabels));
+	} else if (state.board_id === undefined) {
+		router.push("/vue-kanban/404");
 	}
-})();
-
-watchEffect(() => {
-	localStorage.setItem("board", JSON.stringify(state.board));
-	localStorage.setItem("boardLabels", JSON.stringify(state.boardLabels));
 });
 
 export default {
