@@ -2,12 +2,19 @@
 	import { ref, inject } from "vue";
 	import OverlayCard from "./OverlayCard.vue";
 	import OverlayLabels from "./OverlayLabels.vue";
+	import OverlayPassword from "./OverlayPassword.vue";
 
 	const store = inject("store");
 
 	const emit = defineEmits(["close"]);
 
 	const labelManager = ref(false);
+	const boardPassword = ref(
+		// checks if unlocked
+		!store.state.boardsUnlocked.some(
+			(i) => i.boardId === store.state.board_id
+		)
+	);
 
 	function closeOverlay() {
 		store.state.itemsDraggable = true;
@@ -18,14 +25,22 @@
 <template>
 	<div class="overlay" @click="closeOverlay">
 		<div class="overlay-content" @click.stop>
-			<OverlayCard
-				:taskData="store.state.editingData.taskData"
-				:listData="store.state.editingData.listData"
-				v-if="!labelManager"
-				@toggleLabelManager="labelManager = true"
-				@close="closeOverlay"
-			/>
-			<OverlayLabels v-if="labelManager" @close="labelManager = false" />
+			<template v-if="boardPassword">
+				<OverlayPassword />
+			</template>
+			<template v-else>
+				<OverlayCard
+					:taskData="store.state.editingData.taskData"
+					:listData="store.state.editingData.listData"
+					v-if="!labelManager"
+					@toggleLabelManager="labelManager = true"
+					@close="closeOverlay"
+				/>
+				<OverlayLabels
+					v-if="labelManager"
+					@close="labelManager = false"
+				/>
+			</template>
 		</div>
 	</div>
 </template>
