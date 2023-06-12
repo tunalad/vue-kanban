@@ -68,20 +68,31 @@
 
 		if (labelIndex !== -1) {
 			// If the label already exists, remove it from the array
+			//client update
 			props.taskData.labels.splice(labelIndex, 1);
+
+			props.taskData.labels.sort((a, b) => a.id - b.id);
+			labelSelector.value.selectedIndex = 0;
+
+			//server update
+			await api.deleteCardLabel({
+				card_id: props.taskData.id,
+				label_id: label.id,
+			});
 		} else {
 			// If the label doesn't exist, push it to the array
+			//client update
 			props.taskData.labels.push(label);
+
+			props.taskData.labels.sort((a, b) => a.id - b.id);
+			labelSelector.value.selectedIndex = 0;
+
+			// server update
+			await api.postCardLabel({
+				card_id: props.taskData.id,
+				label_id: label.id,
+			});
 		}
-
-		props.taskData.labels.sort((a, b) => a.id - b.id);
-		labelSelector.value.selectedIndex = 0;
-
-		// server update
-		await api.postCardLabel({
-			card_id: props.taskData.id,
-			label_id: label.id,
-		});
 	}
 
 	// handles focusing when editing

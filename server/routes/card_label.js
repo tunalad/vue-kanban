@@ -82,4 +82,18 @@ router.delete("/:id", (req, res) => {
 	}
 });
 
+router.delete("/", (req, res) => {
+	try {
+		const table = db.table(tableName);
+		const { card_id, label_id } = req.query;
+
+		table.deleteRow({ card_id: card_id, label_id: label_id }, (e) => {
+			if (e) res.status(500).json({ error: e });
+			else res.status(204).end();
+		});
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
 module.exports = router;

@@ -9,13 +9,16 @@ const apiClient = axios.create({
 });
 
 export default {
+	/* GET */
 	getBoard(id) {
 		return apiClient.get(`/board/${id}`);
 	},
+
 	getBoardFull(id) {
 		return apiClient.get(`/board/${id}/full`);
 	},
 
+	/* POST */
 	postList(data) {
 		const { title, date_created, position, board_id } = data;
 
@@ -91,6 +94,7 @@ export default {
 		);
 	},
 
+	/* PATCH */
 	patchList(id, data) {
 		return apiClient.patch(`/list/${id}`, data, {
 			headers: {
@@ -115,6 +119,7 @@ export default {
 		});
 	},
 
+	/* DELETE */
 	deleteList(id) {
 		return apiClient.delete(`/list/${id}`, {
 			headers: {
@@ -136,6 +141,15 @@ export default {
 			headers: {
 				"Content-Type": "application/json",
 			},
+		});
+	},
+
+	deleteCardLabel(data) {
+		return apiClient.delete(`/card_label`, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			params: data,
 		});
 	},
 };
