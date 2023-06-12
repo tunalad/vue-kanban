@@ -18,7 +18,9 @@ const state = reactive({
 	boardLabels: [],
 	itemsDraggable: true,
 	editingData: {},
-	boardsUnlocked: JSON.parse(localStorage.getItem("boardsUnlocked")) || [],
+	boardsUnlocked: JSON.parse(localStorage.getItem("boardsUnlocked")) || [
+		{ boardsId: 2 },
+	],
 });
 
 watchEffect(async () => {

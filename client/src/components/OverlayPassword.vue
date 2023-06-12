@@ -10,7 +10,17 @@
 	async function submitPassword() {
 		const response = await api.getBoard(store.state.board_id);
 		if (response.data[0].password === passwordInput.value) {
-			console.log("correct password");
+			let boardsUnlocked =
+				JSON.parse(localStorage.getItem("boardsUnlocked")) || [];
+
+			boardsUnlocked.push({ boardId: parseInt(store.state.board_id) });
+			localStorage.setItem(
+				"boardsUnlocked",
+				JSON.stringify(boardsUnlocked)
+			);
+
+			// reload page
+			window.location.reload();
 		}
 	}
 </script>
