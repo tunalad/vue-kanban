@@ -1,5 +1,6 @@
 const express = require("express");
 const routes = require("./routes");
+const cors = require("cors");
 
 const createTables = require("./database/createTables");
 
@@ -7,7 +8,7 @@ const app = express();
 const PORT = 1337;
 
 app.use(express.json());
-
+app.use(cors());
 app.use(routes);
 
 app.listen(PORT, async () => {
