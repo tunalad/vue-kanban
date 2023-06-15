@@ -231,7 +231,7 @@ router.patch("/:id", async (req, res) => {
 			{
 				title: title || card.title,
 				description: description || card.description,
-				position: position || card.position,
+				position: position !== undefined ? position : card.position,
 
 				list_id: list_id || card.list_id,
 				// date creation shouldn't be updated.

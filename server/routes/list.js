@@ -160,7 +160,6 @@ router.patch("/:id", async (req, res) => {
 			else if (list.position > position)
 				sql += `SET position=position+1 WHERE board_id=${list.board_id} AND (position BETWEEN ${position} AND ${list.position})`;
 
-			console.log(sql);
 			db.execSql(sql, (e) => {
 				if (e) res.status(500).json({ error: e });
 			});
@@ -171,7 +170,6 @@ router.patch("/:id", async (req, res) => {
 			{
 				title: title || list.title,
 				position: position !== undefined ? position : list.position,
-				// board_id shouldn't be updated. Same goes for creation date, doesn't make sense
 			},
 			{ id: tableId },
 			(e) => {

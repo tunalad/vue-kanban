@@ -66,6 +66,9 @@
 		(newBoard) => {
 			board.value = newBoard;
 			board.value.sort((a, b) => a.position - b.position);
+			board.value.forEach((item) => {
+				item.cards.sort((a, b) => a.position - b.position);
+			});
 		},
 		{ immediate: true }
 	);

@@ -36,9 +36,9 @@
 	}
 
 	async function cardDrop(item, e) {
-		let droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+		let droppedItem = toRaw(JSON.parse(e.dataTransfer.getData("text")));
 		let fromList = JSON.parse(e.dataTransfer.getData("fromList"));
-		const newPosition = toRaw(item).position;
+		const newPos = toRaw(item).position;
 		const newList = toRaw(item).list_id;
 
 		// if list dropped, do nothing
@@ -56,12 +56,12 @@
 				// pushes to the new list
 				board.value[props.listData.position].cards,
 				droppedItem,
-				item.position + 1
+				newPos + 1
 			);
 
 			// server
 			await api.patchCard(toRaw(droppedItem).id, {
-				position: newPosition + 1,
+				position: newPos + 1,
 				list_id: newList,
 			});
 			return;
@@ -69,15 +69,14 @@
 
 		// if from the same list
 		// client
-		utils.moveInArray(
-			props.listData.cards,
-			droppedItem.position,
-			item.position
-		);
+		console.log(droppedItem.position, newPos);
+
+		utils.moveInArray(props.listData.cards, droppedItem.position, newPos);
+		console.log(droppedItem.position, newPos);
 
 		// server
 		await api.patchCard(toRaw(droppedItem).id, {
-			position: newPosition,
+			position: newPos,
 		});
 	}
 </script>
@@ -112,9 +111,7 @@
 				:style="{ backgroundColor: label.color }"
 			></span>
 		</div>
-		<p>
-			{{ props.taskData.title }}
-		</p>
+		<p>{{ props.taskData.title }} {{ props.taskData.position }}</p>
 		<div class="icons">
 			<p v-if="props.taskData.description">🗒️</p>
 		</div>
