@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+const JWTHelper = require("../utils/jwt-helpers");
 const db = require("../database");
 const tableName = "board";
 
@@ -140,6 +141,41 @@ router.post("/", (req, res) => {
 					});
 			}
 		);
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
+router.post("/:id/unlock", async (req, res) => {
+	try {
+		const table = db.table(tableName);
+		const { password } = req.body;
+		const itemId = req.params.id;
+
+		// get the board's password
+		const boardData = await new Promise((res, rej) => {
+			table.selectAll({ id: itemId }, (e, data) => {
+				if (e) return rej(e);
+				else {
+					res(data[0]);
+				}
+			});
+		});
+
+		// if passed password is correct
+		if (boardData.password === password) {
+			const token = JWTHelper.generateToken({
+				boardId: boardData.id,
+				boardTitle: boardData.title,
+				boardPassword: boardData.password,
+			});
+
+			res.status(200).json({
+				message: "correct password",
+				jwt: token,
+				dateUnlocked: Date.now(),
+			});
+		} else res.status(500).json({ error: "wrong password" });
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}

@@ -19,6 +19,14 @@ export default {
 	},
 
 	/* POST */
+	postBoardUnlock(id, data) {
+		return apiClient.post(`/board/${id}/unlock`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
+
 	postList(data) {
 		const { title, date_created, position, board_id } = data;
 
