@@ -7,7 +7,7 @@
 	import Overlay from "./Overlay.vue";
 
 	const store = inject("store");
-	const board = ref([]);
+	const board = ref(store.state.board);
 
 	const addingList = ref(false);
 	const newList = ref("");

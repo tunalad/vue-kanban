@@ -171,7 +171,7 @@
 		when dropping a card onto a card */
 		if (!e.target.classList.contains("list")) return;
 
-		const droppedItem = JSON.parse(e.dataTransfer.getData("text"));
+		const droppedItem = toRaw(JSON.parse(e.dataTransfer.getData("text")));
 		const newList = toRaw(item).id;
 
 		// if card dropped
@@ -192,7 +192,7 @@
 			);
 
 			// same actions on the server
-			const response = await api.patchCard(toRaw(droppedItem).id, {
+			const response = await api.patchCard(droppedItem.id, {
 				position: 0,
 				list_id: newList,
 			});
@@ -201,15 +201,12 @@
 
 		// if list dropped
 		// local
-		utils.moveInArray(
-			props.boardData,
-			toRaw(droppedItem).position,
-			toRaw(item).position
-		);
+		const newPos = toRaw(item).position;
+		utils.moveInArray(props.boardData, droppedItem.position, newPos);
 
 		// server
-		await api.patchList(toRaw(droppedItem).id, {
-			position: newPosition,
+		await api.patchList(droppedItem.id, {
+			position: newPos,
 		});
 	}
 
