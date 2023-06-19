@@ -7,6 +7,7 @@ function createTables() {
 		{
 			title: "TEXT NOT NULL",
 			password: "TEXT NOT NULL",
+			date_created: "INTEGER NOT NULL", // unix timestamp
 		},
 		(e) => {
 			if (e) console.error("DBHelper createTable('board') ERROR:", e);

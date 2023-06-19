@@ -19,6 +19,15 @@ export default {
 	},
 
 	/* POST */
+	postBoard(data) {
+		console.log(data);
+		return apiClient.post("/board", data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
+
 	postBoardUnlock(id, data) {
 		return apiClient.post(`/board/${id}/unlock`, data, {
 			headers: {

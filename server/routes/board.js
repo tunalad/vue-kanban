@@ -127,18 +127,40 @@ router.post("/", (req, res) => {
 		const table = db.table(tableName);
 		const { title, password } = req.body;
 
+		const date_created = Date.now();
 		table.insertRow(
 			{
 				title: title,
 				password: password,
+				date_created: date_created,
 			},
 			(e) => {
 				if (e)
-					res.status(500).json({ error: "failed to create board" });
-				else
-					res.status(201).json({
-						message: "board created successfully",
+					res.status(500).json({
+						error: e,
 					});
+				else {
+					const conditions = {
+						title: title,
+						password: password,
+						date_created: date_created,
+					};
+
+					table.selectAll(conditions, (err, data) => {
+						if (err) {
+							res.status(500).json({
+								error: err,
+							});
+						} else {
+							const responseData = {
+								message: "board created successfully",
+								data: data,
+							};
+
+							res.status(201).json(responseData);
+						}
+					});
+				}
 			}
 		);
 	} catch (e) {
