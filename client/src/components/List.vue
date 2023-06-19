@@ -6,7 +6,7 @@
 	const store = inject("store");
 	const board = ref(store.state.board);
 
-	const props = defineProps(["listData", "boardData"]);
+	const props = defineProps(["boardData", "listData", "boardData"]);
 
 	const editing = ref(false);
 	const inputField = ref(null);
@@ -37,7 +37,7 @@
 	async function deleteList() {
 		try {
 			// local
-			utils.removeObject(board.value, props.listData.position);
+			utils.removeObject(props.boardData, props.listData.position);
 
 			// server
 			await api.deleteList(props.listData.id);

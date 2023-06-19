@@ -93,6 +93,7 @@
 			<ul class="cards-list">
 				<Card
 					v-for="card in list.cards"
+					:boardData="board"
 					:taskData="card"
 					:listData="list"
 				/>
