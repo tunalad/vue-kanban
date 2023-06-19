@@ -197,7 +197,7 @@ router.post("/:id/unlock", async (req, res) => {
 				jwt: token,
 				dateUnlocked: Date.now(),
 			});
-		} else res.status(500).json({ error: "wrong password" });
+		} else res.status(401).json({ error: "wrong password" });
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}

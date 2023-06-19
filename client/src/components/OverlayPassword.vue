@@ -2,32 +2,37 @@
 	import { ref, inject } from "vue";
 	import api from "../api";
 
-	const emit = defineEmits(["close"]);
 	const store = inject("store");
 
 	const passwordInput = ref("");
 
 	async function submitPassword() {
-		const response = await api.postBoardUnlock(store.state.board_id, {
-			password: passwordInput.value,
-		});
-
-		if (response.data.message === "correct password") {
-			let boardsUnlocked =
-				JSON.parse(localStorage.getItem("boardsUnlocked")) || [];
-
-			boardsUnlocked.push({
-				boardId: parseInt(store.state.board_id),
-				token: response.data.jwt,
-				dateUnlocked: response.data.dateUnlocked,
+		try {
+			const response = await api.postBoardUnlock(store.state.board_id, {
+				password: passwordInput.value,
 			});
-			localStorage.setItem(
-				"boardsUnlocked",
-				JSON.stringify(boardsUnlocked)
-			);
 
-			// reload page
-			window.location.reload();
+			if (response.data.message === "correct password") {
+				let boardsUnlocked =
+					JSON.parse(localStorage.getItem("boardsUnlocked")) || [];
+
+				boardsUnlocked.push({
+					boardId: parseInt(store.state.board_id),
+					token: response.data.jwt,
+					dateUnlocked: response.data.dateUnlocked,
+				});
+				localStorage.setItem(
+					"boardsUnlocked",
+					JSON.stringify(boardsUnlocked)
+				);
+
+				// reload page
+				window.location.reload();
+			}
+		} catch (e) {
+			if (e.response && e.response.status === 401)
+				alert("oopsie, wrong password");
+			else console.error(e);
 		}
 	}
 </script>
@@ -50,7 +55,9 @@
 	<!-- footer -->
 	<div class="footer-container">
 		<button @click="submitPassword">Unlock</button>
-		<button @click="$emit('close')">Close</button>
+		<router-link :to="'/vue-kanban/dashboard/'">
+			<button>Close</button>
+		</router-link>
 	</div>
 </template>
 
