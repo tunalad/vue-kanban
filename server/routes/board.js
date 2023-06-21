@@ -194,6 +194,7 @@ router.post("/:id/unlock", async (req, res) => {
 
 			res.status(200).json({
 				message: "correct password",
+				boardTitle: boardData.title,
 				jwt: token,
 				dateUnlocked: Date.now(),
 			});

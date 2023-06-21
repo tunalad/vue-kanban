@@ -12,12 +12,15 @@
 				password: passwordInput.value,
 			});
 
+			console.log(response.data);
+
 			if (response.data.message === "correct password") {
 				let boardsUnlocked =
 					JSON.parse(localStorage.getItem("boardsUnlocked")) || [];
 
 				boardsUnlocked.push({
 					boardId: parseInt(store.state.board_id),
+					boardTitle: response.data.boardTitle,
 					token: response.data.jwt,
 					dateUnlocked: response.data.dateUnlocked,
 				});

@@ -35,7 +35,7 @@
 		<ul class="history-list">
 			<li v-for="b in boardsHistory">
 				<router-link :to="'/vue-kanban/board/' + b.boardId">
-					{{ b.id }}
+					{{ b.boardTitle }}
 				</router-link>
 			</li>
 		</ul>
