@@ -197,7 +197,6 @@
 				position: 0,
 				list_id: newList.id,
 			});
-			console.log(response.data);
 			return;
 		}
 

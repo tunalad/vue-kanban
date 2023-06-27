@@ -163,19 +163,8 @@ router.patch("/:id", async (req, res) => {
 		}
 
 		// moving to a different list
-		console.log(list_id, card.list_id);
 		if (list_id !== undefined && list_id !== card.list_id) {
-			// delete from old one
-			table.deleteRow({ id: tableId }, (e) => {
-				if (e) {
-					res.status(500)
-						.json({ error: "failed to delete a card" })
-						.end();
-					return;
-				}
-			});
-
-			// update positions
+			// move items around
 			// increment everything in new list that's > newpos
 			const sqlNewList = `UPDATE ${table.name} SET position=position+1 WHERE list_id=${list_id} AND position >= ${position}`;
 			db.execSql(sqlNewList, (e) => {
@@ -188,42 +177,21 @@ router.patch("/:id", async (req, res) => {
 				if (e) res.status(500).json({ error: e });
 			});
 
-			// append to the new list
-			table.insertRow(
+			// update position of itself
+			table.updateRowNew(
 				{
-					id: card.id,
-					title: card.title,
-					description: card.description,
-					date_created: card.date_created,
-					position: position,
+					title: title || card.title,
+					description: description || card.description,
+					position: position !== undefined ? position : card.position,
 
 					list_id: list_id,
+					// date creation shouldn't be updated.
 				},
+				{ id: tableId },
 				(e) => {
 					if (e) {
-						res.status(500)
-							.json({
-								error: "failed to create a card",
-							})
-							.end();
-						return;
-					} else {
-						res.status(201)
-							.json({
-								message: "card moved successfully",
-								data: {
-									id: card.id,
-									title: card.title,
-									description: card.description,
-									date_created: card.date_created,
-									position: position,
-
-									list_id: list_id,
-								},
-							})
-							.end();
-						return;
-					}
+						res.status(500).json({ error: e });
+					} else res.status(204).end();
 				}
 			);
 			return;
