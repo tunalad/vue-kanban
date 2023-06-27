@@ -4,7 +4,6 @@
 	import api from "../api";
 
 	const store = inject("store");
-	const board = ref(store.state.board);
 
 	const props = defineProps(["boardData", "listData", "boardData"]);
 
@@ -168,11 +167,11 @@
 
 	async function listDrop(item, e) {
 		/* this line prevents this function from executing
-		when dropping a card onto a card */
+			when dropping a card onto a card */
 		if (!e.target.classList.contains("list")) return;
 
 		const droppedItem = toRaw(JSON.parse(e.dataTransfer.getData("text")));
-		const newList = toRaw(item).id;
+		const newList = toRaw(item);
 
 		// if card dropped
 		if (e.dataTransfer.getData("isList") === "false") {
@@ -180,13 +179,15 @@
 
 			utils.removeObject(
 				// pops item from old list
-				board.value[fromList.position].cards,
+				//board.value[fromList.position].cards,
+				props.boardData[fromList.position].cards,
 				droppedItem.position
 			);
 
 			utils.addObject(
 				// pushes to the new list
-				board.value[props.listData.position].cards,
+				//board.value[newList.position].cards,
+				props.boardData[newList.position].cards,
 				droppedItem,
 				0
 			);
@@ -194,8 +195,9 @@
 			// same actions on the server
 			const response = await api.patchCard(droppedItem.id, {
 				position: 0,
-				list_id: newList,
+				list_id: newList.id,
 			});
+			console.log(response.data);
 			return;
 		}
 

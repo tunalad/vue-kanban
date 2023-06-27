@@ -165,7 +165,6 @@ router.patch("/:id", async (req, res) => {
 		// moving to a different list
 		console.log(list_id, card.list_id);
 		if (list_id !== undefined && list_id !== card.list_id) {
-			console.log("ASS");
 			// delete from old one
 			table.deleteRow({ id: tableId }, (e) => {
 				if (e) {
@@ -230,7 +229,6 @@ router.patch("/:id", async (req, res) => {
 			return;
 		}
 
-		console.log("GASS");
 		// moving items around if required
 		if (position !== undefined && position !== card.position) {
 			let sql = `UPDATE ${table.name} `;

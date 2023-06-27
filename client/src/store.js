@@ -38,21 +38,11 @@ watchEffect(async () => {
 			if (boardData) {
 				const { lists, labels } = boardData;
 
-				localStorage.setItem("board", JSON.stringify(lists));
-				localStorage.setItem("boardLabels", JSON.stringify(labels));
+				state.board = lists;
+				state.boardLabels = labels;
 
-				state.board = JSON.parse(localStorage.getItem("board"));
-				state.boardLabels = JSON.parse(
-					localStorage.getItem("boardLabels")
-				);
 				state.board_id = boardData.id;
 			}
-
-			localStorage.setItem("board", JSON.stringify(state.board));
-			localStorage.setItem(
-				"boardLabels",
-				JSON.stringify(state.boardLabels)
-			);
 		}
 	} else if (state.board_id === undefined) {
 		console.log("cummings");

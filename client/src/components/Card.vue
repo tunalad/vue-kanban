@@ -4,9 +4,8 @@
 	import api from "../api";
 
 	const store = inject("store");
-	const board = ref(store.state.board);
 
-	const props = defineProps(["taskData", "listData"]);
+	const props = defineProps(["boardData", "taskData", "listData"]);
 
 	function cardStyle(e, style) {
 		//if (e.dataTransfer.getData("isList") === "false")
@@ -36,10 +35,10 @@
 	}
 
 	async function cardDrop(item, e) {
-		let droppedItem = toRaw(JSON.parse(e.dataTransfer.getData("text")));
-		let fromList = JSON.parse(e.dataTransfer.getData("fromList"));
+		const droppedItem = toRaw(JSON.parse(e.dataTransfer.getData("text")));
+		const fromList = JSON.parse(e.dataTransfer.getData("fromList"));
 		const newPos = toRaw(item).position;
-		const newList = toRaw(item).list_id;
+		const newList = props.listData;
 
 		// if list dropped, do nothing
 		if (e.dataTransfer.getData("isList") === "true") return;
@@ -48,13 +47,15 @@
 		if (fromList.title !== props.listData.title) {
 			utils.removeObject(
 				// pops item from old list
-				board.value[fromList.position].cards,
+				props.boardData[fromList.position].cards,
 				droppedItem.position
 			);
 
+			console.log(props.listData);
+
 			utils.addObject(
 				// pushes to the new list
-				board.value[props.listData.position].cards,
+				newList.cards,
 				droppedItem,
 				newPos + 1
 			);
@@ -62,7 +63,7 @@
 			// server
 			await api.patchCard(toRaw(droppedItem).id, {
 				position: newPos + 1,
-				list_id: newList,
+				list_id: newList.id,
 			});
 			return;
 		}
@@ -111,7 +112,7 @@
 				:style="{ backgroundColor: label.color }"
 			></span>
 		</div>
-		<p>{{ props.taskData.title }} {{ props.taskData.position }}</p>
+		<p>{{ props.taskData }}</p>
 		<div class="icons">
 			<p v-if="props.taskData.description">🗒️</p>
 		</div>
