@@ -163,7 +163,9 @@ router.patch("/:id", async (req, res) => {
 		}
 
 		// moving to a different list
+		console.log(list_id, card.list_id);
 		if (list_id !== undefined && list_id !== card.list_id) {
+			console.log("ASS");
 			// delete from old one
 			table.deleteRow({ id: tableId }, (e) => {
 				if (e) {
@@ -172,6 +174,19 @@ router.patch("/:id", async (req, res) => {
 						.end();
 					return;
 				}
+			});
+
+			// update positions
+			// increment everything in new list that's > newpos
+			const sqlNewList = `UPDATE ${table.name} SET position=position+1 WHERE list_id=${list_id} AND position >= ${position}`;
+			db.execSql(sqlNewList, (e) => {
+				if (e) res.status(500).json({ error: e });
+			});
+
+			// decrement everything in old list that's > oldpos
+			const sqlOldList = `UPDATE ${table.name} SET position=position-1 WHERE list_id=${card.list_id} AND position > ${card.position}`;
+			db.execSql(sqlOldList, (e) => {
+				if (e) res.status(500).json({ error: e });
 			});
 
 			// append to the new list
@@ -212,8 +227,10 @@ router.patch("/:id", async (req, res) => {
 					}
 				}
 			);
+			return;
 		}
 
+		console.log("GASS");
 		// moving items around if required
 		if (position !== undefined && position !== card.position) {
 			let sql = `UPDATE ${table.name} `;
@@ -227,6 +244,7 @@ router.patch("/:id", async (req, res) => {
 			});
 		}
 
+		// if from same list
 		table.updateRowNew(
 			{
 				title: title || card.title,
