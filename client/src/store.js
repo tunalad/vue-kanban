@@ -12,6 +12,16 @@ async function getBoard(id) {
 	}
 }
 
+async function boardExists(id) {
+	try {
+		const response = await apiClient.getBoard(id);
+		return response.data[0];
+	} catch (e) {
+		console.error(e);
+		return null;
+	}
+}
+
 const state = reactive({
 	board_id: null,
 	board: [],
@@ -23,6 +33,10 @@ const state = reactive({
 
 watchEffect(async () => {
 	if (state.board_id) {
+		// if doesn't exist
+		if (!(await boardExists(state.board_id)))
+			router.push("/vue-kanban/404");
+
 		// if locked
 		if (
 			!state.boardsUnlocked.some(
@@ -45,7 +59,6 @@ watchEffect(async () => {
 			}
 		}
 	} else if (state.board_id === undefined) {
-		console.log("cummings");
 		router.push("/vue-kanban/404");
 	}
 });

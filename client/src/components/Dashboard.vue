@@ -1,5 +1,5 @@
 <script setup>
-	import { ref, inject } from "vue";
+	import { ref, inject, onMounted } from "vue";
 	import api from "../api";
 	import router from "../router";
 
@@ -26,6 +26,15 @@
 			console.error(e);
 		}
 	}
+
+	onMounted(() => {
+		// clear the stat
+		store.state.board_id = null;
+		store.state.board = [];
+		store.state.boardLabels = [];
+		store.state.itemsDraggable = true;
+		store.state.editingData = {};
+	});
 </script>
 
 <template>
@@ -77,12 +86,11 @@
 		margin: 0;
 		padding: 0.75rem 0;
 		list-style-type: none;
-		overflow: hidden;
 	}
 	.history-list li {
 		background-color: tomato;
-		display: inline;
-		margin: 5rem 0.5rem;
-		padding: 3rem;
+		text-align: left;
+		margin: 0.25rem;
+		padding: 0 1rem;
 	}
 </style>
