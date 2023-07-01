@@ -1,5 +1,5 @@
 <script setup>
-	import { ref, inject, watch, onMounted } from "vue";
+	import { ref, inject, watch, onMounted, onUnmounted } from "vue";
 	import { useRoute } from "vue-router";
 	import api from "../api";
 	import Card from "./Card.vue";
@@ -12,6 +12,8 @@
 	const addingList = ref(false);
 	const newList = ref("");
 	const inputField = ref(null);
+
+	let sse = null;
 
 	async function addList(e) {
 		if (e.key === "Escape") {
@@ -84,6 +86,17 @@
 
 	onMounted(() => {
 		store.state.board_id = useRoute().params.id;
+	});
+
+	onUnmounted(() => {
+		// SSE closing
+		if (store.state.sse) {
+			store.state.sse.close();
+			store.state.sse = null;
+			console.log("SSE connection closed.");
+		} else {
+			console.log("No SSE connection to close.");
+		}
 	});
 </script>
 

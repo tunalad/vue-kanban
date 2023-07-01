@@ -22,6 +22,19 @@ async function boardExists(id) {
 	}
 }
 
+async function updateBoardState() {
+	const boardData = await getBoard(state.board_id);
+
+	if (boardData) {
+		const { lists, labels } = boardData;
+
+		state.board = lists;
+		state.boardLabels = labels;
+
+		state.board_id = boardData.id;
+	}
+}
+
 const state = reactive({
 	board_id: null,
 	board: [],
@@ -29,6 +42,7 @@ const state = reactive({
 	itemsDraggable: true,
 	editingData: {},
 	boardsUnlocked: JSON.parse(localStorage.getItem("boardsUnlocked")) || [],
+	sse: null,
 });
 
 watchEffect(async () => {
@@ -45,18 +59,28 @@ watchEffect(async () => {
 		) {
 			state.itemsDraggable = false;
 		} else {
-			// if unlocked already
+			// if unlocked
 			state.itemsDraggable = true;
-			const boardData = await getBoard(state.board_id);
 
-			if (boardData) {
-				const { lists, labels } = boardData;
+			updateBoardState();
 
-				state.board = lists;
-				state.boardLabels = labels;
-
-				state.board_id = boardData.id;
+			// sse watching
+			if (state.sse) {
+				state.sse.close();
+				state.sse = null;
 			}
+
+			state.sse = new EventSource(
+				`http://localhost:1337/board/${state.board_id}/live`
+			);
+
+			state.sse.addEventListener("message", async (event) => {
+				// on SSE message
+				if (JSON.parse(event.data).updateRequired) {
+					console.log(`${Date.now()} PULL NEW DATA`);
+					updateBoardState();
+				}
+			});
 		}
 	} else if (state.board_id === undefined) {
 		router.push("/vue-kanban/404");
