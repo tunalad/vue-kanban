@@ -3,6 +3,7 @@
 	import OverlayCard from "./OverlayCard.vue";
 	import OverlayLabels from "./OverlayLabels.vue";
 	import OverlayPassword from "./OverlayPassword.vue";
+	import router from "../router";
 
 	const store = inject("store");
 
@@ -19,6 +20,9 @@
 	function closeOverlay() {
 		store.state.itemsDraggable = true;
 		store.state.editingData = {};
+
+		// redirect to dashboard if we were on password page
+		if (boardPassword.value) router.push("/vue-kanban/dashboard");
 	}
 </script>
 

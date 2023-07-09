@@ -12,8 +12,6 @@
 				password: passwordInput.value,
 			});
 
-			console.log(response.data);
-
 			if (response.data.message === "correct password") {
 				let boardsUnlocked =
 					JSON.parse(localStorage.getItem("boardsUnlocked")) || [];
@@ -24,6 +22,7 @@
 					token: response.data.jwt,
 					dateUnlocked: response.data.dateUnlocked,
 				});
+
 				localStorage.setItem(
 					"boardsUnlocked",
 					JSON.stringify(boardsUnlocked)
@@ -52,6 +51,8 @@
 			type="password"
 			placeholder="Board Password"
 			v-model="passwordInput"
+			@keyup.enter="submitPassword"
+			autofocus
 		/>
 	</div>
 

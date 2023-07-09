@@ -13,8 +13,6 @@
 	const newList = ref("");
 	const inputField = ref(null);
 
-	let sse = null;
-
 	async function addList(e) {
 		if (e.key === "Escape") {
 			addingList.value = false;
