@@ -3,6 +3,7 @@
 	import OverlayCard from "./OverlayCard.vue";
 	import OverlayLabels from "./OverlayLabels.vue";
 	import OverlayPassword from "./OverlayPassword.vue";
+	import OverlayBoard from "./OverlayBoard.vue";
 	import router from "../router";
 
 	const store = inject("store");
@@ -10,6 +11,7 @@
 	const emit = defineEmits(["close"]);
 
 	const labelManager = ref(false);
+	const boardCreate = ref(store.state.board_id);
 	const boardPassword = ref(
 		// checks if unlocked
 		!store.state.boardsUnlocked.some(
@@ -29,7 +31,10 @@
 <template>
 	<div class="overlay" @click="closeOverlay">
 		<div class="overlay-content" @click.stop>
-			<template v-if="boardPassword">
+			<template v-if="!boardCreate">
+				<OverlayBoard @close="closeOverlay" />
+			</template>
+			<template v-else-if="boardPassword">
 				<OverlayPassword />
 			</template>
 			<template v-else>

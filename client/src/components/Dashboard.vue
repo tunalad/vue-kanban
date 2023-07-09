@@ -1,31 +1,9 @@
 <script setup>
 	import { ref, inject, onMounted } from "vue";
-	import api from "../api";
-	import router from "../router";
+	import Overlay from "./Overlay.vue";
 
 	const store = inject("store");
 	const boardsHistory = ref(store.state.boardsUnlocked);
-
-	const creatingBoard = ref(false);
-	const newBoard = ref({
-		boardTitle: "",
-		boardPassword: "",
-	});
-
-	async function createBoard() {
-		try {
-			const response = await api.postBoard({
-				title: newBoard.value.boardTitle,
-				password: newBoard.value.boardPassword,
-			});
-
-			const redirectTo = `/vue-kanban/board/${response.data.data[0].id}`;
-
-			router.push(redirectTo);
-		} catch (e) {
-			console.error(e);
-		}
-	}
 
 	onMounted(() => {
 		// clear the stat
@@ -39,7 +17,7 @@
 
 <template>
 	<h1>Dashboard</h1>
-	<div class="history-container" v-if="!creatingBoard">
+	<div class="history-container">
 		<h2>History</h2>
 		<ul class="history-list">
 			<li v-for="b in boardsHistory">
@@ -48,27 +26,8 @@
 				</router-link>
 			</li>
 		</ul>
-		<button @click="creatingBoard = !creatingBoard">New board</button>
-	</div>
-
-	<div class="content-container" v-else>
-		Board name:
-		<input
-			type="text"
-			placeholder="Board name"
-			v-model="newBoard.boardTitle"
-		/>
-		<br />
-		Board password:
-		<input
-			type="password"
-			placeholder="Board password"
-			v-model="newBoard.boardPassword"
-		/>
-		<br />
-		<br />
-		<button @click="createBoard">create board</button>
-		<button @click="creatingBoard = !creatingBoard">cancel</button>
+		<button @click="store.state.itemsDraggable = false">New board</button>
+		<Overlay v-if="!store.state.itemsDraggable" />
 	</div>
 </template>
 
