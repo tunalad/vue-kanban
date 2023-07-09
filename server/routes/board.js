@@ -98,7 +98,19 @@ router.get("/", (req, res) => {
 		const table = db.table(tableName);
 		table.selectAll({}, (e, data) => {
 			if (e) res.status(500).json({ error: err.message });
-			else res.status(200).json(data);
+			else {
+				const { includePasswords } = req.body;
+				if (includePasswords)
+					res.status(200).json(data); // include passwords
+				else
+					res.status(200).json(
+						// remove passwords
+						data.map((item) => {
+							const { password, ...rest } = item;
+							return rest;
+						})
+					);
+			}
 		});
 	} catch (e) {
 		res.status(500).json({ error: e });

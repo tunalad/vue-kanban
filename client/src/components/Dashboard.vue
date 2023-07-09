@@ -27,6 +27,7 @@
 			</li>
 		</ul>
 		<button @click="store.state.itemsDraggable = false">New board</button>
+		<button @click="store.state.itemsDraggable = false">Find Board</button>
 		<Overlay v-if="!store.state.itemsDraggable" />
 	</div>
 </template>

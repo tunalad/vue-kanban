@@ -4,6 +4,7 @@
 	import OverlayLabels from "./OverlayLabels.vue";
 	import OverlayPassword from "./OverlayPassword.vue";
 	import OverlayBoard from "./OverlayBoard.vue";
+	import OverlayFindBoard from "./OverlayFindBoard.vue";
 	import router from "../router";
 
 	const store = inject("store");
@@ -12,6 +13,7 @@
 
 	const labelManager = ref(false);
 	const boardCreate = ref(store.state.board_id);
+	const boardFind = ref(true);
 	const boardPassword = ref(
 		// checks if unlocked
 		!store.state.boardsUnlocked.some(
@@ -31,7 +33,10 @@
 <template>
 	<div class="overlay" @click="closeOverlay">
 		<div class="overlay-content" @click.stop>
-			<template v-if="!boardCreate">
+			<template v-if="boardFind">
+				<OverlayFindBoard @close="closeOverlay" />
+			</template>
+			<template v-else-if="!boardCreate">
 				<OverlayBoard @close="closeOverlay" />
 			</template>
 			<template v-else-if="boardPassword">

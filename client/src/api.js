@@ -11,7 +11,8 @@ const apiClient = axios.create({
 export default {
 	/* GET */
 	getBoard(id) {
-		return apiClient.get(`/board/${id}`);
+		if (id) return apiClient.get(`/board/${id}`);
+		else return apiClient.get("/board");
 	},
 
 	getBoardFull(id) {
