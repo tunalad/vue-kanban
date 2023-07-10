@@ -48,8 +48,7 @@
 
 	<!-- footer -->
 	<div class="footer-container">
-		<button>Unlock</button>
-		<button>Close</button>
+		<button @click="$emit('close')">Close</button>
 	</div>
 </template>
 

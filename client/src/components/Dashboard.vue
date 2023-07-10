@@ -5,6 +5,11 @@
 	const store = inject("store");
 	const boardsHistory = ref(store.state.boardsUnlocked);
 
+	const overlayDashboard = ref({
+		newBoard: false,
+		findBoard: false,
+	});
+
 	onMounted(() => {
 		// clear the stat
 		store.state.board_id = null;
@@ -26,9 +31,28 @@
 				</router-link>
 			</li>
 		</ul>
-		<button @click="store.state.itemsDraggable = false">New board</button>
-		<button @click="store.state.itemsDraggable = false">Find Board</button>
-		<Overlay v-if="!store.state.itemsDraggable" />
+		<button
+			@click="
+				store.state.itemsDraggable = false;
+				overlayDashboard.newBoard = true;
+			"
+		>
+			New board
+		</button>
+		<button
+			@click="
+				store.state.itemsDraggable = false;
+				overlayDashboard.findBoard = true;
+			"
+		>
+			Find Board
+		</button>
+		<Overlay
+			v-if="!store.state.itemsDraggable"
+			:newBoard="overlayDashboard.newBoard"
+			:findBoard="overlayDashboard.findBoard"
+			@close="overlayDashboard = { newBoard: false, findBoard: false }"
+		/>
 	</div>
 </template>
 

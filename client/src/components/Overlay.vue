@@ -10,10 +10,9 @@
 	const store = inject("store");
 
 	const emit = defineEmits(["close"]);
+	const props = defineProps(["findBoard", "newBoard"]);
 
 	const labelManager = ref(false);
-	const boardCreate = ref(store.state.board_id);
-	const boardFind = ref(true);
 	const boardPassword = ref(
 		// checks if unlocked
 		!store.state.boardsUnlocked.some(
@@ -25,6 +24,7 @@
 		store.state.itemsDraggable = true;
 		store.state.editingData = {};
 
+		emit("close");
 		// redirect to dashboard if we were on password page
 		if (boardPassword.value) router.push("/vue-kanban/dashboard");
 	}
@@ -33,15 +33,18 @@
 <template>
 	<div class="overlay" @click="closeOverlay">
 		<div class="overlay-content" @click.stop>
-			<template v-if="boardFind">
+			<!-- DASHBOARD -->
+			<template v-if="props.findBoard">
 				<OverlayFindBoard @close="closeOverlay" />
 			</template>
-			<template v-else-if="!boardCreate">
+			<template v-else-if="props.newBoard">
 				<OverlayBoard @close="closeOverlay" />
 			</template>
+			<!-- BOARD LOCKED -->
 			<template v-else-if="boardPassword">
 				<OverlayPassword />
 			</template>
+			<!-- BOARD UNLOCKED -->
 			<template v-else>
 				<OverlayCard
 					:taskData="store.state.editingData.taskData"
