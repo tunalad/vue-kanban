@@ -198,7 +198,7 @@
 		<p class="small-text">
 			Date created:
 			{{
-				new Date(props.taskData.dateCreated).toLocaleString("en-us", {
+				new Date(props.taskData.date_created).toLocaleString("en-us", {
 					day: "numeric",
 					month: "long",
 					year: "numeric",

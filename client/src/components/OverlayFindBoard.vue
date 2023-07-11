@@ -1,21 +1,62 @@
 <script setup>
-	import { onMounted, computed, ref, nextTick } from "vue";
+	import { onMounted, ref } from "vue";
 	import api from "../api";
 
 	const emit = defineEmits(["close"]);
 
 	const boardsList = ref(null);
 	const searchInput = ref("");
+	const sortState = ref({
+		option: "id",
+		ascending: false,
+	});
 
-	const filterList = computed(() => {
+	function filterList() {
+		let filteredList = [];
 		if (boardsList.value === null) return [];
 		else
-			return boardsList.value.filter((item) => {
+			filteredList = boardsList.value.filter((item) => {
 				return item.title
 					.toLowerCase()
 					.includes(searchInput.value.toLowerCase());
 			});
-	});
+
+		//filteredList.sort((a, b) => {
+		//	if (sortState.value.ascending) {
+		//		const tempA = a;
+		//		a = b;
+		//		b = tempA;
+		//	}
+		//	if (sortState.value.option === "title")
+		//		return a.title.localeCompare(b.title);
+		//	else return a[sortState.value.option] - b[sortState.value.option];
+		//});
+
+		return sortList(filteredList);
+	}
+
+	function changeSortState(option) {
+		if (option === sortState.value.option)
+			sortState.value.ascending = !sortState.value.ascending;
+		else
+			sortState.value = {
+				option: option,
+				ascending: false,
+			};
+	}
+
+	function sortList(list) {
+		return list.sort((a, b) => {
+			if (sortState.value.ascending) {
+				const tempA = a;
+				a = b;
+				b = tempA;
+			}
+			if (sortState.value.option === "title")
+				return a.title.localeCompare(b.title);
+			else return a[sortState.value.option] - b[sortState.value.option];
+		});
+	}
 
 	onMounted(async () => {
 		boardsList.value = (await api.getBoard()).data;
@@ -37,8 +78,28 @@
 				placeholder="search thing"
 			/>
 		</div>
+		<button @click="changeSortState('id')">
+			id
+			{{
+				sortState.option === "id"
+					? sortState.ascending
+						? "⬆️"
+						: "⬇️"
+					: ""
+			}}
+		</button>
+		<button @click="changeSortState('title')">
+			title
+			{{
+				sortState.option === "title"
+					? sortState.ascending
+						? "⬆️"
+						: "⬇️"
+					: ""
+			}}
+		</button>
 		<ul>
-			<li v-for="bl in filterList">
+			<li v-for="bl in filterList()">
 				<router-link :to="'/vue-kanban/board/' + bl.id">
 					{{ `(${bl.id}) - ` + bl.title }}
 				</router-link>
