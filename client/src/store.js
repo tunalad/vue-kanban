@@ -82,6 +82,12 @@ watchEffect(async () => {
 
 			state.sse.addEventListener("message", async (event) => {
 				// on SSE message
+				if (JSON.parse(event.data) === "BOARD DELETED") {
+					state.sse.close();
+					window.location.replace("/vue-kanban/404");
+					//router.push("/vue-kanban/404");
+				}
+
 				if (JSON.parse(event.data).updateRequired) {
 					console.log(`${Date.now()} PULL NEW DATA`);
 					updateBoardState();

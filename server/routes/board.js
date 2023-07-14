@@ -156,6 +156,11 @@ router.get("/:id/live", async (req, res) => {
 		setInterval(async () => {
 			let newLatestData = await getBoardDataFull(itemId);
 
+			if (newLatestData.length < 1) {
+				res.write(`data: "BOARD DELETED"\n\n`);
+				return;
+			}
+
 			if (JSON.stringify(latestData) === JSON.stringify(newLatestData))
 				data.updateRequired = false;
 			else {
@@ -165,7 +170,7 @@ router.get("/:id/live", async (req, res) => {
 			res.write(`data: ${JSON.stringify(data)}\n\n`);
 		}, 500);
 	} catch (e) {
-		res.status(500).json({ error: e.message });
+		res.status(123).json({ error: e.message });
 	}
 });
 

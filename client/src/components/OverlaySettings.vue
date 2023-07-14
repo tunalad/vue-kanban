@@ -80,6 +80,28 @@
 		}
 	}
 
+	async function deleteBoard() {
+		// remove from localstorage
+		let boardsUnlocked =
+			JSON.parse(localStorage.getItem("boardsUnlocked")) || [];
+
+		boardsUnlocked = boardsUnlocked.filter(
+			(item) => item.boardId !== store.state.boardData.id
+		);
+
+		localStorage.setItem("boardsUnlocked", JSON.stringify(boardsUnlocked));
+		store.state.boardsUnlocked = JSON.parse(
+			localStorage.getItem("boardsUnlocked")
+		);
+
+		// delete from database
+		try {
+			await api.deleteBoard(props.boardData.id);
+		} catch (e) {
+			console.error(e);
+		}
+	}
+
 	function clearErrors() {
 		errorMessage.value = {
 			code: null,
@@ -114,7 +136,7 @@
 	<!-- header -->
 	<div class="header-container">
 		<h1>Board settings</h1>
-		<button>Delete board</button>
+		<button @click="deleteBoard">Delete board</button>
 	</div>
 	<hr />
 

@@ -146,6 +146,14 @@ export default {
 	},
 
 	/* DELETE */
+	deleteBoard(id) {
+		return apiClient.delete(`/board/${id}`, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
+
 	deleteList(id) {
 		return apiClient.delete(`/list/${id}`, {
 			headers: {
