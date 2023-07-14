@@ -36,7 +36,7 @@
 			try {
 				const response = await api.postList({
 					...pushData,
-					board_id: store.state.board_id, // server thing only
+					board_id: store.state.boardData.id, // server thing only
 				});
 
 				// update the new item locally with it's id from the database
@@ -83,7 +83,7 @@
 	});
 
 	onMounted(() => {
-		store.state.board_id = useRoute().params.id;
+		store.state.boardData.id = useRoute().params.id;
 	});
 
 	onUnmounted(() => {

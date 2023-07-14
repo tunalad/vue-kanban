@@ -23,7 +23,7 @@ async function boardExists(id) {
 }
 
 async function updateBoardState() {
-	const boardData = await getBoard(state.board_id);
+	const boardData = await getBoard(state.boardData.id);
 
 	if (boardData) {
 		const { lists, labels } = boardData;
@@ -31,20 +31,19 @@ async function updateBoardState() {
 		state.board = lists;
 		state.boardLabels = labels;
 
-		state.boardData = {
-			id: boardData.id,
-			title: boardData.title,
-			dateCreated: boardData.date_created,
-		};
-
-		state.board_id = boardData.id;
+		state.boardData.id = boardData.id;
+		state.boardData.title = boardData.title;
+		state.boardData.dateCreated = boardData.date_created;
 	}
 }
 
 const state = reactive({
-	board_id: null,
 	board: [],
-	boardData: {},
+	boardData: {
+		id: null,
+		title: null,
+		dateCreated: null,
+	},
 	boardLabels: [],
 	itemsDraggable: true,
 	editingData: {},
@@ -53,15 +52,15 @@ const state = reactive({
 });
 
 watchEffect(async () => {
-	if (state.board_id) {
+	if (state.boardData.id) {
 		// if doesn't exist
-		if (!(await boardExists(state.board_id)))
+		if (!(await boardExists(state.boardData.id)))
 			router.push("/vue-kanban/404");
 
 		// if locked
 		if (
 			!state.boardsUnlocked.some(
-				(i) => i.boardId === parseInt(state.board_id)
+				(i) => i.boardId === parseInt(state.boardData.id)
 			)
 		) {
 			state.itemsDraggable = false;
@@ -78,7 +77,7 @@ watchEffect(async () => {
 			}
 
 			state.sse = new EventSource(
-				`http://localhost:1337/board/${state.board_id}/live`
+				`http://localhost:1337/board/${state.boardData.id}/live`
 			);
 
 			state.sse.addEventListener("message", async (event) => {
@@ -89,8 +88,6 @@ watchEffect(async () => {
 				}
 			});
 		}
-	} else if (state.board_id === undefined) {
-		router.push("/vue-kanban/404");
 	}
 });
 

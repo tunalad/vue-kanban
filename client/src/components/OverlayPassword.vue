@@ -8,16 +8,19 @@
 
 	async function submitPassword() {
 		try {
-			const response = await api.postBoardUnlock(store.state.board_id, {
-				password: passwordInput.value,
-			});
+			const response = await api.postBoardUnlock(
+				store.state.boardData.id,
+				{
+					password: passwordInput.value,
+				}
+			);
 
 			if (response.data.message === "correct password") {
 				let boardsUnlocked =
 					JSON.parse(localStorage.getItem("boardsUnlocked")) || [];
 
 				boardsUnlocked.push({
-					boardId: parseInt(store.state.board_id),
+					boardId: parseInt(store.state.boardData.id),
 					boardTitle: response.data.boardTitle,
 					token: response.data.jwt,
 					dateUnlocked: response.data.dateUnlocked,

@@ -17,7 +17,7 @@
 	const boardPassword = ref(
 		// checks if unlocked
 		!store.state.boardsUnlocked.some(
-			(i) => i.boardId === store.state.board_id
+			(i) => i.boardId === store.state.boardData.id
 		)
 	);
 

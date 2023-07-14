@@ -12,7 +12,9 @@
 
 	onMounted(() => {
 		// clear the stat
-		store.state.board_id = null;
+		store.state.boardData.id = null;
+		store.state.boardData.title = null;
+		store.state.boardData.dateCreated = null;
 		store.state.board = [];
 		store.state.boardLabels = [];
 		store.state.itemsDraggable = true;

@@ -39,7 +39,7 @@
 			const response = await api.postLabel({
 				...toRaw(addingObject.value),
 				date_created: Date.now(),
-				board_id: store.state.board_id,
+				board_id: store.state.boardData.id,
 			});
 
 			const newData = response.data.data[0];
