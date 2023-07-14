@@ -123,7 +123,7 @@
 <template>
 	<!-- header container -->
 	<div class="header-container">
-		<h1>Labels management</h1>
+		<h1>Labels manager</h1>
 	</div>
 	<!-- content container -->
 	<div class="content-container">
@@ -215,7 +215,7 @@
 	</div>
 	<!-- footer container -->
 	<div class="footer-container">
-		<button @click="$emit('close')">Close</button>
+		<button @click="$emit('close')">Back</button>
 	</div>
 </template>
 

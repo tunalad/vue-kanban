@@ -1,7 +1,8 @@
 <script setup>
 	import { useRoute } from "vue-router";
-	import { ref, watch } from "vue";
+	import { ref, watch, inject } from "vue";
 
+	const store = inject("store");
 	const route = useRoute();
 
 	const isDashboard = ref(route.path === "/vue-kanban/dashboard");
@@ -24,7 +25,14 @@
 		>
 			🏠️
 		</router-link>
-		<p href="#">board title or sum</p>
+		<p>{{ store.state.boardData.title }}</p>
+		<a
+			href="#"
+			@click="store.state.itemsDraggable = false"
+			style="font-size: 40px"
+			title="board settings"
+			>⚙️</a
+		>
 	</nav>
 </template>
 

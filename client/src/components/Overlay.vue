@@ -5,12 +5,13 @@
 	import OverlayPassword from "./OverlayPassword.vue";
 	import OverlayBoard from "./OverlayBoard.vue";
 	import OverlayFindBoard from "./OverlayFindBoard.vue";
+	import OverlaySettings from "./OverlaySettings.vue";
 	import router from "../router";
 
 	const store = inject("store");
 
 	const emit = defineEmits(["close"]);
-	const props = defineProps(["findBoard", "newBoard"]);
+	const props = defineProps(["findBoard", "newBoard", "boardSettings"]);
 
 	const labelManager = ref(false);
 	const boardPassword = ref(
@@ -46,7 +47,14 @@
 			</template>
 			<!-- BOARD UNLOCKED -->
 			<template v-else>
+				<OverlaySettings
+					v-if="!store.state.editingData.taskData && !labelManager"
+					@toggleLabelManager="labelManager = true"
+					@close="closeOverlay"
+					:boardData="store.state.boardData"
+				/>
 				<OverlayCard
+					v-else
 					:taskData="store.state.editingData.taskData"
 					:listData="store.state.editingData.listData"
 					v-if="!labelManager"

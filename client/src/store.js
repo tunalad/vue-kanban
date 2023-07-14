@@ -31,6 +31,12 @@ async function updateBoardState() {
 		state.board = lists;
 		state.boardLabels = labels;
 
+		state.boardData = {
+			id: boardData.id,
+			title: boardData.title,
+			dateCreated: boardData.date_created,
+		};
+
 		state.board_id = boardData.id;
 	}
 }
@@ -38,6 +44,7 @@ async function updateBoardState() {
 const state = reactive({
 	board_id: null,
 	board: [],
+	boardData: {},
 	boardLabels: [],
 	itemsDraggable: true,
 	editingData: {},
