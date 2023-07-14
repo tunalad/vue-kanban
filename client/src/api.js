@@ -113,6 +113,14 @@ export default {
 	},
 
 	/* PATCH */
+	patchBoard(id, data) {
+		return apiClient.patch(`/board/${id}`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	},
+
 	patchList(id, data) {
 		return apiClient.patch(`/list/${id}`, data, {
 			headers: {
