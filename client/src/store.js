@@ -84,6 +84,7 @@ watchEffect(async () => {
 				// on SSE message
 				if (JSON.parse(event.data) === "BOARD DELETED") {
 					state.sse.close();
+					//window.location.replace("/vue-kanban/dashboard");
 					window.location.replace("/vue-kanban/404");
 					//router.push("/vue-kanban/404");
 				}

@@ -69,6 +69,8 @@
 		<h1>Find board</h1>
 	</div>
 
+	<hr />
+
 	<!-- content -->
 	<div class="content-container">
 		<div class="input-container">
@@ -104,6 +106,9 @@
 					{{ `(${bl.id}) - ` + bl.title }}
 				</router-link>
 			</li>
+			<p v-if="filterList().length < 1">
+				The database has no boards. Create some!
+			</p>
 		</ul>
 	</div>
 

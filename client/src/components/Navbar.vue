@@ -1,23 +1,22 @@
 <script setup>
 	import { useRoute } from "vue-router";
-	import { ref, watch, inject } from "vue";
+	import { ref, watch, inject, computed } from "vue";
 
 	const store = inject("store");
 	const route = useRoute();
 
-	const isDashboard = ref(route.path === "/vue-kanban/dashboard");
+	const isDashboard = ref(route.path.startsWith("/vue-kanban/board"));
 
 	watch(
 		() => route.path,
 		(newPath) => {
-			isDashboard.value = newPath === "/vue-kanban/dashboard";
+			isDashboard.value = newPath.startsWith("/vue-kanban/board");
 		}
 	);
 </script>
 
 <template>
-	<nav v-if="isDashboard">dashboard stuff</nav>
-	<nav v-else>
+	<nav>
 		<router-link
 			:to="'/vue-kanban/dashboard'"
 			style="font-size: 40px"
@@ -25,14 +24,17 @@
 		>
 			🏠️
 		</router-link>
-		<p>{{ store.state.boardData.title }}</p>
-		<a
-			href="#"
-			@click="store.state.itemsDraggable = false"
-			style="font-size: 40px"
-			title="board settings"
-			>⚙️</a
-		>
+		<template v-if="!isDashboard">dashboard stuff </template>
+		<template v-else>
+			<p>{{ store.state.boardData.title }}</p>
+			<a
+				href="#"
+				@click="store.state.itemsDraggable = false"
+				style="font-size: 40px"
+				title="board settings"
+				>⚙️</a
+			>
+		</template>
 	</nav>
 </template>
 

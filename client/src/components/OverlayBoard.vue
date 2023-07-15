@@ -40,6 +40,8 @@
 		<h1>Create board</h1>
 	</div>
 
+	<hr />
+
 	<!-- content -->
 	<div class="content-container">
 		Board name:

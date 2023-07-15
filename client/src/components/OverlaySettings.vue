@@ -9,6 +9,7 @@
 
 	const editingValue = ref(null);
 	const titleInput = ref(props.boardData.title);
+	const confirmDeletion = ref(false);
 	const errorMessage = ref({
 		code: null,
 		msg: null,
@@ -81,6 +82,8 @@
 	}
 
 	async function deleteBoard() {
+		if (!confirm("Are you sure you want to delete the board?")) return;
+
 		// remove from localstorage
 		let boardsUnlocked =
 			JSON.parse(localStorage.getItem("boardsUnlocked")) || [];
@@ -136,7 +139,7 @@
 	<!-- header -->
 	<div class="header-container">
 		<h1>Board settings</h1>
-		<button @click="deleteBoard">Delete board</button>
+		<button v-if="!editingValue" @click="deleteBoard">Delete board</button>
 	</div>
 	<hr />
 

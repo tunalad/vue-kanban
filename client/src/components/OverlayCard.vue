@@ -130,6 +130,8 @@
 
 		<button @click="deleteCard">Delete card</button>
 	</div>
+
+	<hr />
 	<!-- content container -->
 	<div class="content-container">
 		<!-- labels container -->

@@ -17,8 +17,6 @@
 	const editingLabel = ref(null);
 	const editingLabelNew = ref(null);
 
-	console.log(store.state.board[0].cards[0].labels);
-
 	async function addLabel(action = "save") {
 		if (action === "cancel") {
 			adding.value = false;
@@ -125,6 +123,9 @@
 	<div class="header-container">
 		<h1>Labels manager</h1>
 	</div>
+
+	<hr />
+
 	<!-- content container -->
 	<div class="content-container">
 		<!-- list labels -->
