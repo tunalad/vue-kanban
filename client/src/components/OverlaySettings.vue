@@ -9,7 +9,6 @@ const store = inject("store");
 
 const editingValue = ref(null);
 const titleInput = ref(props.boardData.title);
-const confirmDeletion = ref(false);
 const errorMessage = ref({
     code: null,
     msg: null,
@@ -161,7 +160,12 @@ function goBack() {
     <div class="title-editor" v-if="editingValue === 'title'">
         <h3>Editing board title</h3>
         <span>Title: </span>
-        <input placeholder="Title goes here" v-model="titleInput" />
+        <input
+            placeholder="Title goes here"
+            v-model="titleInput"
+            @keydown.enter="saveChanges"
+            @keydown.esc="goBack"
+        />
         <br />
     </div>
 

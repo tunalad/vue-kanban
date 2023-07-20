@@ -306,11 +306,17 @@ watch(addingCard, (newVal, oldVal) => {
     display: table;
     white-space: normal;
     word-break: break-all;
+    flex: 1;
 }
 .list-header {
     display: flex;
     justify-content: space-between;
     padding: 0 0.4rem;
     background-color: chocolate;
+}
+.list-header input {
+    flex: 1;
+    font-size: 16px;
+    font-weight: bold;
 }
 </style>
