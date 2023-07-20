@@ -5,15 +5,15 @@ import Dashboard from "../components/Dashboard.vue";
 import NotFound from "../components/NotFound.vue";
 
 const routes = [
-	{ component: Board, path: "/vue-kanban/board/:id" },
-	{ component: NotFound, path: "/vue-kanban/404" },
-	{ component: Dashboard, path: "/vue-kanban/dashboard" },
-	{ path: "/vue-kanban/", redirect: "/vue-kanban/dashboard" },
+    { component: Board, path: "/vue-kanban/board/:id" },
+    { component: NotFound, path: "/vue-kanban/404" },
+    { component: Dashboard, path: "/vue-kanban/dashboard" },
+    { path: "/vue-kanban/", redirect: "/vue-kanban/dashboard" },
 ];
 
 const router = createRouter({
-	history: createWebHistory(),
-	routes,
+    history: createWebHistory(),
+    routes,
 });
 
 export default router;
