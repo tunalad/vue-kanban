@@ -41,36 +41,30 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
     try {
         const table = db.table(tableName);
-        const { title, date_created, position, board_id } = req.body;
+        const date_created = Date.now();
 
         table.insertRow(
             {
-                title: title,
-                date_created: date_created, // make sure it's unix time,
-                position: position,
-
-                board_id: board_id,
+                ...req.body,
+                date_created: date_created,
             },
             (e) => {
                 if (e)
-                    res.status(500).json({ error: "failed to create a list" });
+                    res.status(500).json({
+                        error: `Failed to create ${tableName} item.`,
+                    });
                 else {
                     //get the item's id
-                    const conditions = {
-                        title: title,
-                        date_created: date_created,
-                        position: position,
-                        board_id: board_id,
-                    };
+                    const conditions = { date_created: date_created };
 
                     table.selectAll(conditions, (err, data) => {
                         if (err) {
                             res.status(500).json({
-                                error: "Failed to retrieve the created list",
+                                error: `Failed to retrieve the created ${tableName} item.`,
                             });
                         } else {
                             const responseData = {
-                                message: "List created successfully",
+                                message: `${tableName} item created successfully.`,
                                 data: data,
                             };
 
@@ -78,7 +72,7 @@ router.post("/", (req, res) => {
                         }
                     });
                 }
-            },
+            }
         );
     } catch (e) {
         res.status(500).json({ error: e });
@@ -98,7 +92,7 @@ router.delete("/:id", async (req, res) => {
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data[0]);
-                },
+                }
             );
         });
 
@@ -115,7 +109,7 @@ router.delete("/:id", async (req, res) => {
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data);
-                },
+                }
             );
         });
 
@@ -137,28 +131,30 @@ router.patch("/:id", async (req, res) => {
         const tableId = req.params.id;
         const { title, position } = req.body;
 
-        const list = await new Promise((res, rej) => {
+        const itemExists = await new Promise((res, rej) => {
             db.execSql(
                 `SELECT * FROM ${table.name} WHERE id=${tableId}`,
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data[0]);
-                },
+                }
             );
         });
 
-        if (!list) {
-            res.status(404).json({ message: "list doesn't exist" }).end();
+        if (!itemExists) {
+            res.status(404)
+                .json({ message: `${tableName} item doesn't exist` })
+                .end();
             return;
         }
 
         // moving items around if required
-        if (position !== undefined && position !== list.position) {
+        if (position !== undefined && position !== itemExists.position) {
             let sql = `UPDATE ${table.name} `;
-            if (list.position < position)
-                sql += `SET position=position-1 WHERE board_id=${list.board_id} AND (position BETWEEN ${list.position} AND ${position})`;
-            else if (list.position > position)
-                sql += `SET position=position+1 WHERE board_id=${list.board_id} AND (position BETWEEN ${position} AND ${list.position})`;
+            if (itemExists.position < position)
+                sql += `SET position=position-1 WHERE board_id=${itemExists.board_id} AND (position BETWEEN ${itemExists.position} AND ${position})`;
+            else if (itemExists.position > position)
+                sql += `SET position=position+1 WHERE board_id=${itemExists.board_id} AND (position BETWEEN ${position} AND ${itemExists.position})`;
 
             db.execSql(sql, (e) => {
                 if (e) res.status(500).json({ error: e });
@@ -168,14 +164,15 @@ router.patch("/:id", async (req, res) => {
         // updating the item
         table.updateRowNew(
             {
-                title: title || list.title,
-                position: position !== undefined ? position : list.position,
+                title: title || itemExists.title,
+                position:
+                    position !== undefined ? position : itemExists.position,
             },
             { id: tableId },
             (e) => {
                 if (e) res.status(500).json({ error: e });
                 else res.status(204).end();
-            },
+            }
         );
     } catch (e) {
         res.status(500).json({ error: e });

@@ -40,7 +40,7 @@ async function getBoardDataFull(itemId) {
         const nestedLabels = cardLabelData
             .filter((cardLabel) => cardLabel.card_id === card.id)
             .map((cardLabel) =>
-                labelsData.find((label) => label.id === cardLabel.label_id),
+                labelsData.find((label) => label.id === cardLabel.label_id)
             );
 
         // Create a nested card object with associated labels
@@ -56,7 +56,7 @@ async function getBoardDataFull(itemId) {
     const nestedLists = listsData.map((list) => {
         // Assign the corresponding cards to each list
         const nestedCardsData = nestedCards.filter(
-            (card) => card.list_id === list.id,
+            (card) => card.list_id === list.id
         );
 
         // Create a nested list object with associated cards
@@ -72,7 +72,7 @@ async function getBoardDataFull(itemId) {
     const nestedBoardData = boardData.map((board) => {
         // Assign the corresponding lists to each board
         const nestedListsData = nestedLists.filter(
-            (list) => list.board_id === board.id,
+            (list) => list.board_id === board.id
         );
 
         // Create a nested board object with associated lists and labels
@@ -108,7 +108,7 @@ router.get("/", (req, res) => {
                         data.map((item) => {
                             const { password, ...rest } = item;
                             return rest;
-                        }),
+                        })
                     );
             }
         });
@@ -146,7 +146,7 @@ router.get("/:id/live", async (req, res) => {
         res.setHeader("Content-Type", "text/event-stream");
 
         const itemId = req.params.id;
-        let data = {
+        const data = {
             boardId: itemId,
             updateRequired: false,
         };
@@ -154,7 +154,7 @@ router.get("/:id/live", async (req, res) => {
         let latestData = await getBoardDataFull(itemId);
 
         setInterval(async () => {
-            let newLatestData = await getBoardDataFull(itemId);
+            const newLatestData = await getBoardDataFull(itemId);
 
             if (newLatestData.length < 1) {
                 res.write(`data: "BOARD DELETED"\n\n`);
@@ -168,7 +168,7 @@ router.get("/:id/live", async (req, res) => {
                 data.updateRequired = true;
             }
             res.write(`data: ${JSON.stringify(data)}\n\n`);
-        }, 500);
+        }, 250);
     } catch (e) {
         res.status(123).json({ error: e.message });
     }
@@ -178,35 +178,29 @@ router.get("/:id/live", async (req, res) => {
 router.post("/", (req, res) => {
     try {
         const table = db.table(tableName);
-        const { title, password } = req.body;
-
         const date_created = Date.now();
+
         table.insertRow(
             {
-                title: title,
-                password: password,
+                ...req.body,
                 date_created: date_created,
             },
             (e) => {
                 if (e)
                     res.status(500).json({
-                        error: e,
+                        error: `Failed to create ${tableName} item.`,
                     });
                 else {
-                    const conditions = {
-                        title: title,
-                        password: password,
-                        date_created: date_created,
-                    };
+                    const conditions = { date_created: date_created };
 
                     table.selectAll(conditions, (err, data) => {
                         if (err) {
                             res.status(500).json({
-                                error: err,
+                                error: `Failed to retrieve the created ${tableName} item.`,
                             });
                         } else {
                             const responseData = {
-                                message: "board created successfully",
+                                message: `${tableName} item created successfully.`,
                                 data: data,
                             };
 
@@ -214,7 +208,7 @@ router.post("/", (req, res) => {
                         }
                     });
                 }
-            },
+            }
         );
     } catch (e) {
         res.status(500).json({ error: e });
@@ -277,32 +271,40 @@ router.patch("/:id", async (req, res) => {
     try {
         const table = db.table(tableName);
         const tableId = req.params.id;
-        const { title, password } = req.body;
+        const updateData = req.body;
 
-        const board = await new Promise((res, rej) => {
+        const itemExists = await new Promise((res, rej) => {
             db.execSql(
                 `SELECT * FROM ${table.name} WHERE id=${tableId}`,
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data[0]);
-                },
+                }
             );
         });
 
-        if (!board) res.status(404).json({ message: "board doesn't exist" });
-        else
-            table.updateRowNew(
-                {
-                    title: title || board.title,
-                    password: password || board.password,
-                },
-                { id: tableId },
-                (e) => {
-                    if (e) res.status(500).json({ error: e });
-                    else res.status(204).end();
-                },
-            );
+        if (!itemExists)
+            res.status(404).json({
+                message: `${tableName} item doesn't exist`,
+            });
+        else {
+            const updatedFields = {};
+            for (const key in itemExists) {
+                if (updateData.hasOwnProperty(key))
+                    updatedFields[key] = updateData[key];
+                else updatedFields[key] = itemExists[key];
+            }
+
+            table.updateRowNew(updatedFields, { id: tableId }, (error) => {
+                if (error) {
+                    res.status(500).json({ error });
+                } else {
+                    res.status(204).end();
+                }
+            });
+        }
     } catch (e) {
+        console.log(e);
         res.status(500).json({ error: e });
     }
 });

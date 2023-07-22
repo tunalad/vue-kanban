@@ -45,35 +45,29 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
     try {
         const table = db.table(tableName);
-        const { title, date_created, color, board_id } = req.body;
+        const date_created = Date.now();
 
         table.insertRow(
             {
-                title: title,
-                date_created: date_created, // make sure it's unix time,
-                color: color,
-
-                board_id: board_id,
+                ...req.body,
+                date_created: date_created,
             },
             (e) => {
                 if (e)
-                    res.status(500).json({ error: "failed to create a label" });
+                    res.status(500).json({
+                        error: `Failed to create ${tableName} item.`,
+                    });
                 else {
-                    const conditions = {
-                        title: title,
-                        date_created: date_created,
-                        color: color,
-                        board_id: board_id,
-                    };
+                    const conditions = { date_created: date_created };
 
                     table.selectAll(conditions, (err, data) => {
                         if (err) {
                             res.status(500).json({
-                                error: "failed to retrieve the created label",
+                                error: `Failed to retrieve the created ${tableName} item.`,
                             });
                         } else {
                             const responseData = {
-                                message: "label created successfully",
+                                message: `${tableName} item created successfully.`,
                                 data: data,
                             };
 
@@ -81,7 +75,7 @@ router.post("/", (req, res) => {
                         }
                     });
                 }
-            },
+            }
         );
     } catch (e) {
         res.status(500).json({ error: e });
@@ -108,32 +102,38 @@ router.patch("/:id", async (req, res) => {
     try {
         const table = db.table(tableName);
         const tableId = req.params.id;
-        const { title, color } = req.body;
+        const updateData = req.body;
 
-        const label = await new Promise((res, rej) => {
+        const itemExists = await new Promise((res, rej) => {
             db.execSql(
                 `SELECT * FROM ${table.name} WHERE id=${tableId}`,
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data[0]);
-                },
+                }
             );
         });
 
-        if (!label) res.status(404).json({ message: "label doesn't exist" });
-        else
-            table.updateRowNew(
-                {
-                    title: title || label.title,
-                    color: color || label.color,
-                    // board_id shouldn't be updated. Same goes for creation date, doesn't make sense
-                },
-                { id: tableId },
-                (e) => {
-                    if (e) res.status(500).json({ error: e });
-                    else res.status(204).end();
-                },
-            );
+        if (!itemExists)
+            res.status(404).json({
+                message: `${tableName} item doesn't exist`,
+            });
+        else {
+            const updatedFields = {};
+            for (const key in itemExists) {
+                if (updateData.hasOwnProperty(key))
+                    updatedFields[key] = updateData[key];
+                else updatedFields[key] = itemExists[key];
+            }
+
+            table.updateRowNew(updatedFields, { id: tableId }, (error) => {
+                if (error) {
+                    res.status(500).json({ error });
+                } else {
+                    res.status(204).end();
+                }
+            });
+        }
     } catch (e) {
         res.status(500).json({ error: e });
     }

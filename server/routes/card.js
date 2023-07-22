@@ -45,38 +45,29 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
     try {
         const table = db.table(tableName);
-        const { title, description, date_created, position, list_id } =
-            req.body;
+        const date_created = Date.now();
 
         table.insertRow(
             {
-                title: title,
-                description: description,
-                date_created: date_created, // make sure it's unix time,
-                position: position,
-
-                list_id: list_id,
+                ...req.body,
+                date_created: date_created,
             },
             (e) => {
                 if (e)
-                    res.status(500).json({ error: "failed to create a card" });
+                    res.status(500).json({
+                        error: `Failed to create ${tableName} item.`,
+                    });
                 else {
-                    const conditions = {
-                        title: title,
-                        description: description,
-                        date_created: date_created,
-                        position: position,
-                        list_id: list_id,
-                    };
+                    const conditions = { date_created: date_created };
 
                     table.selectAll(conditions, (err, data) => {
                         if (err) {
                             res.status(500).json({
-                                error: "failed to retrieve the created card",
+                                error: `Failed to retrieve the created ${tableName} item.`,
                             });
                         } else {
                             const responseData = {
-                                message: "card created successfully",
+                                message: `${tableName} item created successfully.`,
                                 data: data,
                             };
 
@@ -84,7 +75,7 @@ router.post("/", (req, res) => {
                         }
                     });
                 }
-            },
+            }
         );
     } catch (e) {
         res.status(500).json({ error: e });
@@ -103,7 +94,7 @@ router.delete("/:id", async (req, res) => {
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data[0]);
-                },
+                }
             );
         });
 
@@ -125,7 +116,7 @@ router.delete("/:id", async (req, res) => {
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data);
-                },
+                }
             );
         });
 
@@ -147,23 +138,25 @@ router.patch("/:id", async (req, res) => {
         const tableId = req.params.id;
         const { title, description, position, list_id } = req.body;
 
-        const card = await new Promise((res, rej) => {
+        const itemExists = await new Promise((res, rej) => {
             db.execSql(
                 `SELECT * FROM ${table.name} WHERE id=${tableId}`,
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data[0]);
-                },
+                }
             );
         });
 
-        if (!card) {
-            res.status(404).json({ message: "card doesn't exist" }).end();
+        if (!itemExists) {
+            res.status(404)
+                .json({ message: `${tableName} item doesn't exist` })
+                .end();
             return;
         }
 
         // moving to a different list
-        if (list_id !== undefined && list_id !== card.list_id) {
+        if (list_id !== undefined && list_id !== itemExists.list_id) {
             // move items around
             // increment everything in new list that's > newpos
             const sqlNewList = `UPDATE ${table.name} SET position=position+1 WHERE list_id=${list_id} AND position >= ${position}`;
@@ -172,7 +165,7 @@ router.patch("/:id", async (req, res) => {
             });
 
             // decrement everything in old list that's > oldpos
-            const sqlOldList = `UPDATE ${table.name} SET position=position-1 WHERE list_id=${card.list_id} AND position > ${card.position}`;
+            const sqlOldList = `UPDATE ${table.name} SET position=position-1 WHERE list_id=${itemExists.list_id} AND position > ${itemExists.position}`;
             db.execSql(sqlOldList, (e) => {
                 if (e) res.status(500).json({ error: e });
             });
@@ -180,10 +173,10 @@ router.patch("/:id", async (req, res) => {
             // update position of itself
             table.updateRowNew(
                 {
-                    title: title || card.title,
-                    description: description || card.description,
-                    position: position !== undefined ? position : card.position,
-
+                    title: title || itemExists.title,
+                    description: description || itemExists.description,
+                    position:
+                        position !== undefined ? position : itemExists.position,
                     list_id: list_id,
                     // date creation shouldn't be updated.
                 },
@@ -192,32 +185,32 @@ router.patch("/:id", async (req, res) => {
                     if (e) {
                         res.status(500).json({ error: e });
                     } else res.status(204).end();
-                },
+                }
             );
             return;
         }
 
         // moving items around if required
-        if (position !== undefined && position !== card.position) {
+        if (position !== undefined && position !== itemExists.position) {
             let sql = `UPDATE ${table.name} `;
-            if (card.position < position)
-                sql += `SET position=position-1 WHERE list_id=${card.list_id} AND (position BETWEEN ${card.position} AND ${position})`;
-            else if (card.position > position)
-                sql += `SET position=position+1 WHERE list_id=${card.list_id} AND (position BETWEEN ${position} AND ${card.position})`;
+            if (itemExists.position < position)
+                sql += `SET position=position-1 WHERE list_id=${itemExists.list_id} AND (position BETWEEN ${itemExists.position} AND ${position})`;
+            else if (itemExists.position > position)
+                sql += `SET position=position+1 WHERE list_id=${itemExists.list_id} AND (position BETWEEN ${position} AND ${itemExists.position})`;
 
             db.execSql(sql, (e) => {
                 if (e) res.status(500).json({ error: e });
             });
         }
 
-        // if from same list
+        // if from the same list
         table.updateRowNew(
             {
-                title: title || card.title,
-                description: description || card.description,
-                position: position !== undefined ? position : card.position,
-
-                list_id: list_id || card.list_id,
+                title: title || itemExists.title,
+                description: description || itemExists.description,
+                position:
+                    position !== undefined ? position : itemExists.position,
+                list_id: list_id || itemExists.list_id,
                 // date creation shouldn't be updated.
             },
             { id: tableId },
@@ -225,7 +218,7 @@ router.patch("/:id", async (req, res) => {
                 if (e) {
                     res.status(500).json({ error: e });
                 } else res.status(204).end();
-            },
+            }
         );
     } catch (e) {
         res.status(500).json({ error: e });

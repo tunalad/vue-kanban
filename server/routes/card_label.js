@@ -54,13 +54,13 @@ router.post("/", (req, res) => {
             (e) => {
                 if (e)
                     res.status(500).json({
-                        error: "failed to create a card_label",
+                        error: `failed to create a ${tableName} item`,
                     });
                 else
                     res.status(201).json({
-                        message: "card_label created successfully",
+                        message: `${tableName} item created successfully`,
                     });
-            },
+            }
         );
     } catch (e) {
         res.status(500).json({ error: e });

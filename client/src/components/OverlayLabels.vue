@@ -36,7 +36,6 @@ async function addLabel(action = "save") {
         // server
         const response = await api.postLabel({
             ...toRaw(addingObject.value),
-            date_created: Date.now(),
             board_id: store.state.boardData.id,
         });
 

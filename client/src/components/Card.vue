@@ -1,85 +1,80 @@
 <script setup>
-import { ref, inject, toRaw } from "vue";
-import * as utils from "../utils";
-import api from "../api";
+    import { ref, inject, toRaw } from "vue";
+    import * as utils from "../utils";
+    import api from "../api";
 
-const store = inject("store");
+    const store = inject("store");
 
-const props = defineProps(["boardData", "taskData", "listData"]);
+    const props = defineProps(["boardData", "taskData", "listData"]);
 
-function cardStyle(e, style) {
-    //if (e.dataTransfer.getData("isList") === "false")
-    switch (style) {
-        case "border":
-            e.currentTarget.style.border = "2px solid pink";
-            break;
-        case "noBorder":
-            e.currentTarget.style.border = "";
-            break;
-        case "opacity10":
-            e.target.style.opacity = 0.1;
-            break;
-        case "opacity100":
-            e.target.style.opacity = 1;
-            break;
+    function cardStyle(e, style) {
+        //if (e.dataTransfer.getData("isList") === "false")
+        switch (style) {
+            case "border":
+                e.currentTarget.style.border = "2px solid pink";
+                break;
+            case "noBorder":
+                e.currentTarget.style.border = "";
+                break;
+            case "opacity10":
+                e.target.style.opacity = 0.1;
+                break;
+            case "opacity100":
+                e.target.style.opacity = 1;
+                break;
+        }
     }
-}
 
-/* ============================== */
-/* DRAGGING FUNCTIONALITIES BELOW */
-/* ============================== */
-function cardDragStart(item, e) {
-    e.dataTransfer.setData("text", JSON.stringify(item));
-    e.dataTransfer.setData("fromList", JSON.stringify(props.listData));
-    e.dataTransfer.setData("isList", false);
-}
+    /* ============================== */
+    /* DRAGGING FUNCTIONALITIES BELOW */
+    /* ============================== */
+    function cardDragStart(item, e) {
+        e.dataTransfer.setData("text", JSON.stringify(item));
+        e.dataTransfer.setData("fromList", JSON.stringify(props.listData));
+        e.dataTransfer.setData("isList", false);
+    }
 
-async function cardDrop(item, e) {
-    const droppedItem = toRaw(JSON.parse(e.dataTransfer.getData("text")));
-    const fromList = JSON.parse(e.dataTransfer.getData("fromList"));
-    const newPos = toRaw(item).position;
-    const newList = props.listData;
+    async function cardDrop(item, e) {
+        const droppedItem = toRaw(JSON.parse(e.dataTransfer.getData("text")));
+        const fromList = JSON.parse(e.dataTransfer.getData("fromList"));
+        const newPos = toRaw(item).position;
+        const newList = props.listData;
 
-    // if list dropped, do nothing
-    if (e.dataTransfer.getData("isList") === "true") return;
+        // if list dropped, do nothing
+        if (e.dataTransfer.getData("isList") === "true") return;
 
-    // if not from the same list
-    if (fromList.title !== props.listData.title) {
-        utils.removeObject(
-            // pops item from old list
-            props.boardData[fromList.position].cards,
-            droppedItem.position,
-        );
+        // if not from the same list
+        if (fromList.title !== props.listData.title) {
+            utils.removeObject(
+                // pops item from old list
+                props.boardData[fromList.position].cards,
+                droppedItem.position
+            );
 
-        console.log(props.listData);
+            utils.addObject(
+                // pushes to the new list
+                newList.cards,
+                droppedItem,
+                newPos + 1
+            );
 
-        utils.addObject(
-            // pushes to the new list
-            newList.cards,
-            droppedItem,
-            newPos + 1,
-        );
+            // server
+            await api.patchCard(toRaw(droppedItem).id, {
+                position: newPos + 1,
+                list_id: newList.id,
+            });
+            return;
+        }
+
+        // if from the same list
+        // client
+        utils.moveInArray(props.listData.cards, droppedItem.position, newPos);
 
         // server
         await api.patchCard(toRaw(droppedItem).id, {
-            position: newPos + 1,
-            list_id: newList.id,
+            position: newPos,
         });
-        return;
     }
-
-    // if from the same list
-    // client
-    console.log(droppedItem.position, newPos);
-
-    utils.moveInArray(props.listData.cards, droppedItem.position, newPos);
-    console.log(droppedItem.position, newPos);
-
-    // server
-    await api.patchCard(toRaw(droppedItem).id, {
-        position: newPos,
-    });
-}
 </script>
 
 <template>
@@ -120,31 +115,31 @@ async function cardDrop(item, e) {
 </template>
 
 <style scoped>
-p {
-    margin: 0;
-    padding: 0;
-    white-space: normal;
-    word-break: break-all;
-}
-.list-card {
-    background-color: crimson;
-    text-align: left;
-    list-style-type: none;
-    padding: 0.1rem 0.75rem;
-    margin: 0.5rem 0;
-    border-radius: 0.3rem;
-}
-.labels {
-    margin: 0;
-    padding: 0.25rem 0;
-    display: flex;
-}
-.label-box {
-    display: inline-block;
-    width: 100%;
-    height: 4px;
-    margin-right: 5px;
-    border-radius: 0.3rem;
-    border: 1px solid rgba(0, 0, 0, 0.5);
-}
+    p {
+        margin: 0;
+        padding: 0;
+        white-space: normal;
+        word-break: break-all;
+    }
+    .list-card {
+        background-color: crimson;
+        text-align: left;
+        list-style-type: none;
+        padding: 0.1rem 0.75rem;
+        margin: 0.5rem 0;
+        border-radius: 0.3rem;
+    }
+    .labels {
+        margin: 0;
+        padding: 0.25rem 0;
+        display: flex;
+    }
+    .label-box {
+        display: inline-block;
+        width: 100%;
+        height: 4px;
+        margin-right: 5px;
+        border-radius: 0.3rem;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+    }
 </style>
