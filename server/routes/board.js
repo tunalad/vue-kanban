@@ -40,7 +40,7 @@ async function getBoardDataFull(itemId) {
         const nestedLabels = cardLabelData
             .filter((cardLabel) => cardLabel.card_id === card.id)
             .map((cardLabel) =>
-                labelsData.find((label) => label.id === cardLabel.label_id)
+                labelsData.find((label) => label.id === cardLabel.label_id),
             );
 
         // Create a nested card object with associated labels
@@ -56,7 +56,7 @@ async function getBoardDataFull(itemId) {
     const nestedLists = listsData.map((list) => {
         // Assign the corresponding cards to each list
         const nestedCardsData = nestedCards.filter(
-            (card) => card.list_id === list.id
+            (card) => card.list_id === list.id,
         );
 
         // Create a nested list object with associated cards
@@ -72,7 +72,7 @@ async function getBoardDataFull(itemId) {
     const nestedBoardData = boardData.map((board) => {
         // Assign the corresponding lists to each board
         const nestedListsData = nestedLists.filter(
-            (list) => list.board_id === board.id
+            (list) => list.board_id === board.id,
         );
 
         // Create a nested board object with associated lists and labels
@@ -96,6 +96,7 @@ async function getBoardDataFull(itemId) {
 router.get("/", (req, res) => {
     try {
         const table = db.table(tableName);
+
         table.selectAll({}, (e, data) => {
             if (e) res.status(500).json({ error: err.message });
             else {
@@ -108,7 +109,7 @@ router.get("/", (req, res) => {
                         data.map((item) => {
                             const { password, ...rest } = item;
                             return rest;
-                        })
+                        }),
                     );
             }
         });
@@ -208,7 +209,7 @@ router.post("/", (req, res) => {
                         }
                     });
                 }
-            }
+            },
         );
     } catch (e) {
         res.status(500).json({ error: e });
@@ -279,7 +280,7 @@ router.patch("/:id", async (req, res) => {
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data[0]);
-                }
+                },
             );
         });
 

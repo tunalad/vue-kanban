@@ -7,14 +7,8 @@ const tableName = "list";
 /* GET */
 router.get("/", (req, res) => {
     const table = db.table(tableName);
-    const { date_created, board_id, position } = req.query;
 
-    const whereCondition = {};
-    if (date_created) whereCondition.date_created = date_created;
-    if (board_id) whereCondition.board_id = board_id;
-    if (position) whereCondition.position = position;
-
-    table.selectAll(whereCondition, (err, data) => {
+    table.selectAll(req.query, (err, data) => {
         if (err) {
             res.status(1500).json({ error: err.message });
         } else {
@@ -72,7 +66,7 @@ router.post("/", (req, res) => {
                         }
                     });
                 }
-            }
+            },
         );
     } catch (e) {
         res.status(500).json({ error: e });
@@ -85,36 +79,32 @@ router.delete("/:id", async (req, res) => {
         const table = db.table(tableName);
         const tableId = req.params.id;
 
-        // get list data
-        const list = await new Promise((res, rej) => {
+        // get data
+        const itemExists = await new Promise((res, rej) => {
             db.execSql(
                 `SELECT * FROM ${table.name} WHERE id=${tableId}`,
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data[0]);
-                }
+                },
             );
         });
 
         // delete item
+        if (!itemExists) {
+            res.status(404)
+                .json({ message: `${tableName} item doesn't exist` })
+                .end();
+            return;
+        }
+
         table.deleteRow({ id: tableId }, (e) => {
             if (e) res.status(500).json({ error: e });
             else res.status(204).end();
         });
 
-        // get items where position > deleted item's position
-        const toUpdate = await new Promise((res, rej) => {
-            db.execSql(
-                `SELECT * FROM ${table.name} WHERE board_id=${list.board_id} AND position>${list.position}`,
-                (e, data) => {
-                    if (e) return rej(e);
-                    else res(data);
-                }
-            );
-        });
-
-        // -1 their positions
-        const sql = `UPDATE ${table.name} SET position=position-1 WHERE board_id=${list.board_id} AND position>${list.position}`;
+        // -1 positions for items with higher position than us
+        const sql = `UPDATE ${table.name} SET position=position-1 WHERE board_id=${itemExists.board_id} AND position>${itemExists.position}`;
         db.execSql(sql, (e) => {
             if (e) res.status(500).json({ error: e });
             else res.status(204).end();
@@ -137,7 +127,7 @@ router.patch("/:id", async (req, res) => {
                 (e, data) => {
                     if (e) return rej(e);
                     else res(data[0]);
-                }
+                },
             );
         });
 
@@ -172,7 +162,7 @@ router.patch("/:id", async (req, res) => {
             (e) => {
                 if (e) res.status(500).json({ error: e });
                 else res.status(204).end();
-            }
+            },
         );
     } catch (e) {
         res.status(500).json({ error: e });

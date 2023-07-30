@@ -8,13 +8,8 @@ const tableName = "card_label";
 router.get("/", (req, res) => {
     try {
         const table = db.table(tableName);
-        const { card_id, label_id } = req.query;
 
-        const whereCondition = {};
-        if (card_id) whereCondition.card_id = card_id;
-        if (label_id) whereCondition.label_id = label_id;
-
-        table.selectAll(whereCondition, (err, data) => {
+        table.selectAll(req.query, (err, data) => {
             if (err) {
                 res.status(1500).json({ error: err.message });
             } else {
@@ -44,13 +39,9 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
     try {
         const table = db.table(tableName);
-        const { card_id, label_id } = req.body;
 
         table.insertRow(
-            {
-                card_id: card_id,
-                label_id: label_id,
-            },
+            req.body,
             (e) => {
                 if (e)
                     res.status(500).json({
