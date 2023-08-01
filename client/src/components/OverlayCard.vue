@@ -218,10 +218,16 @@ watch(editing, (newVal, oldVal) => {
     margin: 1rem 0;
 }
 .header-container h1 {
-    margin: 0 0;
+    margin: 0;
     white-space: normal;
     word-break: break-all;
-    width: 100%;
+    border-bottom: 0.15rem dashed rgba(255, 255, 255, 0.5);
+    padding-bottom: 0.15rem;
+    margin-right: 3rem;
+    display: inline-block;
+}
+.header-container input {
+    flex: 1;
 }
 .labels-container {
     margin: 1rem 0;

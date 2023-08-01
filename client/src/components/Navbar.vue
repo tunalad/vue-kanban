@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute } from "vue-router";
-import { ref, watch, inject, computed } from "vue";
+import { ref, watch, inject } from "vue";
 
 const store = inject("store");
 const route = useRoute();
@@ -24,15 +24,14 @@ watch(
         >
             🏠️
         </router-link>
-        <template v-if="!isDashboard">dashboard stuff </template>
-        <template v-else>
+        <template v-if="isDashboard">
             <p>{{ store.state.boardData.title }}</p>
             <a
                 href="#"
                 @click="store.state.itemsDraggable = false"
                 style="font-size: 40px"
                 title="board settings"
-                >⚙️</a
+                >🧰</a
             >
         </template>
     </nav>
@@ -49,5 +48,6 @@ nav {
 p {
     margin: 0;
     padding: 0 1rem;
+    font-weight: bold;
 }
 </style>

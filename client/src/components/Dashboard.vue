@@ -53,6 +53,15 @@ onMounted(() => {
                 <router-link :to="'/vue-kanban/board/' + b.boardId">
                     {{ `(${b.boardId}) - ` + b.boardTitle }}
                 </router-link>
+                <p class="dateAccessed">
+                    {{
+                        new Date(b.dateUnlocked).toLocaleString("en-us", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                        })
+                    }}
+                </p>
             </li>
             <p v-if="boardsHistory.length < 1">You have no unlocked boards.</p>
         </ul>
@@ -82,6 +91,13 @@ onMounted(() => {
 </template>
 
 <style scoped>
+p {
+    margin: 0;
+    padding: 0;
+}
+button {
+    margin: 0 0.5rem;
+}
 .history-container {
     margin: 0 2rem;
     padding: 0.5rem;
@@ -100,11 +116,15 @@ onMounted(() => {
     background-color: tomato;
     text-align: left;
     margin: 0.25rem;
-    padding: 0 1rem;
+    padding: 0 2rem;
     display: flex;
 }
 .history-list li a {
     margin: 0 0.5rem;
     padding: 0;
+}
+.dateAccessed {
+    color: whitesmoke;
+    margin-left: auto;
 }
 </style>

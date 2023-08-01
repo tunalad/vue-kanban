@@ -249,6 +249,7 @@ watch(addingCard, (newVal, oldVal) => {
             <h3 class="list-title" @click="editing = true" v-if="!editing">
                 {{ props.listData.title }}
             </h3>
+            <span @click="deleteList" v-if="!editing">🗑️</span>
 
             <input
                 type="text"
@@ -259,7 +260,6 @@ watch(addingCard, (newVal, oldVal) => {
                 @keyup.enter="editList"
                 @keyup.esc="editList"
             />
-            <span @click="deleteList">🗑️</span>
         </div>
 
         <slot />
@@ -302,17 +302,23 @@ watch(addingCard, (newVal, oldVal) => {
 .list-title {
     text-align: left;
     margin: 0;
-    background-color: darkblue;
+    /*background-color: darkblue;*/
     display: table;
     white-space: normal;
     word-break: break-all;
     flex: 1;
+    border-bottom: 0.15rem dashed rgba(255, 255, 255, 0.5);
+    padding-bottom: 0.15rem;
+    padding-right: 0.25rem;
+    text-shadow: 1px 1px black;
+    opacity: 90%;
+    margin-right: 1rem;
 }
 .list-header {
     display: flex;
     justify-content: space-between;
     padding: 0 0.4rem;
-    background-color: chocolate;
+    /*background-color: chocolate;*/
 }
 .list-header input {
     flex: 1;

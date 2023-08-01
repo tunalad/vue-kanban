@@ -150,7 +150,6 @@ function goBack() {
                 ✏️
             </button>
         </h3>
-
         <button @click="$emit('toggleLabelManager')">Labels manager</button>
         <br />
         <button @click="editingValue = 'password'">Change password</button>
@@ -229,6 +228,9 @@ function goBack() {
 </template>
 
 <style scoped>
+br {
+    margin: 0.25rem;
+}
 .header-container {
     display: flex;
     justify-content: space-between;

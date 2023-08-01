@@ -21,17 +21,6 @@ function filterList() {
                 .includes(searchInput.value.toLowerCase());
         });
 
-    //filteredList.sort((a, b) => {
-    //	if (sortState.value.ascending) {
-    //		const tempA = a;
-    //		a = b;
-    //		b = tempA;
-    //	}
-    //	if (sortState.value.option === "title")
-    //		return a.title.localeCompare(b.title);
-    //	else return a[sortState.value.option] - b[sortState.value.option];
-    //});
-
     return sortList(filteredList);
 }
 
@@ -80,26 +69,28 @@ onMounted(async () => {
                 placeholder="search thing"
             />
         </div>
-        <button @click="changeSortState('id')">
-            id
-            {{
-                sortState.option === "id"
-                    ? sortState.ascending
-                        ? "⬆️"
-                        : "⬇️"
-                    : ""
-            }}
-        </button>
-        <button @click="changeSortState('title')">
-            title
-            {{
-                sortState.option === "title"
-                    ? sortState.ascending
-                        ? "⬆️"
-                        : "⬇️"
-                    : ""
-            }}
-        </button>
+        <div class="buttons-container">
+            <button @click="changeSortState('id')">
+                id
+                {{
+                    sortState.option === "id"
+                        ? sortState.ascending
+                            ? "⬆️"
+                            : "⬇️"
+                        : ""
+                }}
+            </button>
+            <button @click="changeSortState('title')">
+                title
+                {{
+                    sortState.option === "title"
+                        ? sortState.ascending
+                            ? "⬆️"
+                            : "⬇️"
+                        : ""
+                }}
+            </button>
+        </div>
         <ul>
             <li v-for="bl in filterList()">
                 <router-link :to="'/vue-kanban/board/' + bl.id">
@@ -119,6 +110,9 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+button {
+    min-width: 4rem;
+}
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -137,9 +131,8 @@ onMounted(async () => {
     align-items: center;
     margin: 1rem 0;
 }
-
 .content-container {
-    margin: 2rem;
+    margin: 1rem;
     padding: 0.5rem;
     background-color: rgba(0, 0, 0, 25%);
 }
@@ -159,5 +152,11 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
+}
+.buttons-container {
+    margin: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 7rem;
 }
 </style>
