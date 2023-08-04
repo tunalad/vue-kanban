@@ -152,8 +152,8 @@ onUnmounted(() => {
     padding: 0;
 }
 .new-list {
-    background-color: rgb(255, 127, 80, 1%);
-    /*border: 0.1rem solid transparent;*/
+    /*background-color: rgb(255, 127, 80, 1%);
+    border: 0.1rem solid transparent;*/
     border-radius: 0.5rem;
     border-color: coral;
 
