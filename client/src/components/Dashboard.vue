@@ -8,6 +8,7 @@ const boardsHistory = ref(store.state.boardsUnlocked);
 const overlayDashboard = ref({
     newBoard: false,
     findBoard: false,
+    noServer: false,
 });
 
 function removeFromHistory(id) {
@@ -82,9 +83,10 @@ onMounted(() => {
             Find Board
         </button>
         <Overlay
-            v-if="!store.state.itemsDraggable"
+            v-if="!store.state.itemsDraggable || !store.state.serverUp"
             :newBoard="overlayDashboard.newBoard"
             :findBoard="overlayDashboard.findBoard"
+            :checkServer="!store.state.serverUp"
             @close="overlayDashboard = { newBoard: false, findBoard: false }"
         />
     </div>

@@ -37,7 +37,17 @@ async function updateBoardState() {
     }
 }
 
+async function getServerState() {
+    try {
+        await apiClient.getBoard();
+        state.serverUp = true;
+    } catch {
+        state.serverUp = false;
+    }
+}
+
 const state = reactive({
+    serverUp: true,
     board: [],
     boardData: {
         id: null,
@@ -52,7 +62,8 @@ const state = reactive({
 });
 
 watchEffect(async () => {
-    if (state.boardData.id) {
+    getServerState();
+    if (state.boardData.id && state.serverUp) {
         // if doesn't exist
         if (!(await boardExists(state.boardData.id)))
             router.push("/vue-kanban/404");

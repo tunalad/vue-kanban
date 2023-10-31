@@ -6,12 +6,18 @@ import OverlayPassword from "./OverlayPassword.vue";
 import OverlayBoard from "./OverlayBoard.vue";
 import OverlayFindBoard from "./OverlayFindBoard.vue";
 import OverlaySettings from "./OverlaySettings.vue";
+import OverlayServer from "./OverlayServer.vue";
 import router from "../router";
 
 const store = inject("store");
 
 const emit = defineEmits(["close"]);
-const props = defineProps(["findBoard", "newBoard", "boardSettings"]);
+const props = defineProps([
+    "findBoard",
+    "newBoard",
+    "boardSettings",
+    "checkServer",
+]);
 
 const labelManager = ref(false);
 const boardPassword = ref(
@@ -34,8 +40,12 @@ function closeOverlay() {
 <template>
     <div class="overlay" @click="closeOverlay">
         <div class="overlay-content" @click.stop>
+            <!-- SERVER WARNING -->
+            <template v-if="props.checkServer">
+                <OverlayServer />
+            </template>
             <!-- DASHBOARD -->
-            <template v-if="props.findBoard">
+            <template v-else-if="props.findBoard">
                 <OverlayFindBoard @close="closeOverlay" />
             </template>
             <template v-else-if="props.newBoard">
